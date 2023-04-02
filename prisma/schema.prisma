@@ -9,3 +9,61 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id          String      @id @default(uuid()) @db.Uuid
+  name        String      @db.VarChar(255)
+  surname     String      @db.VarChar(255)
+  email       String      @unique @db.VarChar(255)
+  password    String      @db.VarChar(255)
+  cpf         String      @unique @db.Char(11)
+  gender      String      @db.Char(1)
+  birthDate   DateTime    @db.Timestamp(6)
+  createdAt   DateTime    @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime    @updatedAt
+  addressId   String      @db.Uuid
+  address     Address     @relation(fields: [addressId], references: [id])
+  contractors Contractor?
+  providers   Provider?
+}
+
+model Contractor {
+  userId String  @id @db.Uuid
+  user   User    @relation(fields: [userId], references: [id])
+  houses House[]
+}
+
+model Provider {
+  userId String @id @db.Uuid
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model House {
+  id           String     @id @default(uuid()) @db.Uuid
+  addressId    String     @db.Uuid
+  address      Address    @relation(fields: [addressId], references: [id])
+  metersBuilt  Int
+  contractorId String     @db.Uuid
+  contractor   Contractor @relation(fields: [contractorId], references: [userId])
+}
+
+model City {
+  id            String         @id @default(uuid()) @db.Uuid
+  name          String         @db.VarChar(255)
+  neighborhoods Neighborhood[]
+}
+
+model Neighborhood {
+  id      String    @id @default(uuid()) @db.Uuid
+  cityId  String    @db.Uuid
+  city    City      @relation(fields: [cityId], references: [id])
+  address Address[]
+}
+
+model Address {
+  id             String       @id @default(uuid()) @db.Uuid
+  neighborhoodId String       @db.Uuid
+  neighborhood   Neighborhood @relation(fields: [neighborhoodId], references: [id])
+  user           User[]
+  House          House[]
+}

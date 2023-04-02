@@ -5,6 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsnd --respawn --watch --exit-child src ./src/index.ts",
+    "db:migrate": "npx prisma migrate dev",
+    "db:generate": "npx prisma generate",
     "db:build": "docker-compose --env-file .env -f database/docker-compose.yaml up --build",
     "db:down": "docker-compose --env-file .env -f database/docker-compose.yaml up --down",
     "db:start": "docker-compose --env-file .env -f database/docker-compose.yaml start",
