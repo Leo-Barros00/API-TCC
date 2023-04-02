@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "db:build": "docker-compose --env-file .env -f database/docker-compose.yaml up --build",
+    "db:down": "docker-compose --env-file .env -f database/docker-compose.yaml up --down",
+    "db:start": "docker-compose --env-file .env -f database/docker-compose.yaml start",
+    "db:stop": "docker-compose --env-file .env -f database/docker-compose.yaml stop"
   },
   "author": "",
   "license": "ISC",
