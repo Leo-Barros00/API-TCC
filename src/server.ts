@@ -7,6 +7,13 @@ class Server {
   constructor(port: number) {
     this.app = express()
     this.port = port
+
+    this.configure()
+  }
+
+  private configure() {
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
   }
 
   public start() {
