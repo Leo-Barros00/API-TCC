@@ -2,6 +2,8 @@ import 'dotenv/config';
 import 'reflect-metadata';
 import Server from "./server";
 
-const server = new Server(3000)
+const PORT = parseInt(process.env.PORT ?? '3000');
+
+const server = new Server(PORT)
 
 server.start()
