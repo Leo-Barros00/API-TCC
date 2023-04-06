@@ -1,4 +1,5 @@
 import express, { Express } from "express"
+import log, { LogType } from "./utils/log"
 
 class Server {
   private app: Express
@@ -18,7 +19,7 @@ class Server {
 
   public start() {
     this.app.listen(this.port, () => {
-      console.log(`> Listening sever on port ${this.port}`)
+      log(LogType.SUCCESS, 'START', `Listening sever on port ${this.port}`)
     })
   }
 }
