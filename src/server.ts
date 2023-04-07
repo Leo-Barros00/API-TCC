@@ -1,4 +1,6 @@
 import express, { Express } from "express"
+
+import LoggerMiddleware from "./middlewares/loggerMiddleware"
 import log, { LogType } from "./utils/log"
 
 class Server {
@@ -10,11 +12,16 @@ class Server {
     this.port = port
 
     this.configure()
+    this.registerLogger()
   }
 
   private configure() {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
+  }
+
+  public registerLogger() {
+    this.app.use(LoggerMiddleware.handler);
   }
 
   public start() {
