@@ -9,6 +9,8 @@
     "prettier": "prettier --write .",
     "db:migrate": "npx prisma migrate dev",
     "db:generate": "npx prisma generate",
+    "db:seed": "ts-node-dev prisma/seed.ts",
+    "db:wipe": "ts-node-dev prisma/wipe.ts",
     "db:build": "docker-compose --env-file .env -f database/docker-compose.yaml up --build",
     "db:down": "docker-compose --env-file .env -f database/docker-compose.yaml up --down",
     "db:start": "docker-compose --env-file .env -f database/docker-compose.yaml start",
