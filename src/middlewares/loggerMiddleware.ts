@@ -1,12 +1,15 @@
-import { Request, Response, NextFunction } from 'express';
-import log, { LogType, getStatusColoredByRequistionResult } from '../utils/log';
+import { Request, Response, NextFunction } from 'express'
+import log, { LogType, getStatusColoredByRequistionResult } from '../utils/log'
+
+const NS_PER_SEC = 1e9
+const NS_TO_MS = 1e6
 
 class LoggerMiddleware {
   static handler(req: Request, res: Response, next: NextFunction) {
     const startTime = process.hrtime()
 
     res.on('finish', () => {
-      const reqDuration = this.getRequestDuration(startTime).toLocaleString();
+      const reqDuration = LoggerMiddleware.getRequestDuration(startTime).toLocaleString()
       const { method, url } = req
       const { statusCode } = res
 
@@ -17,17 +20,15 @@ class LoggerMiddleware {
       // TO-DO: Implement error log in dev time
       // if (statusCode >= 400)
       //   log(LogType.ERROR, 'ERROR', `${req.error?.stack}`)
-    });
+    })
 
-    next();
+    next()
   }
 
   static getRequestDuration(start: [number, number]): number {
-    const NS_PER_SEC = 1e9
-    const NS_TO_MS = 1e6
     const diff = process.hrtime(start)
     return (diff[0] * NS_PER_SEC + diff[1]) / NS_TO_MS
   }
 }
 
-export default LoggerMiddleware;
+export default LoggerMiddleware
