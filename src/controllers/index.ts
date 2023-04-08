@@ -1,3 +1,4 @@
 import UserController from './userController'
+import AddressControler from './adressController'
 
-export default [UserController]
+export default [UserController, AddressControler]
