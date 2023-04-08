@@ -1,4 +1,4 @@
-import MetadataKeys from './metadataKeys';
+import MetadataKeys from './metadataKeys'
 
 export enum Methods {
   GET = 'get',
@@ -15,23 +15,23 @@ export interface IRoute {
 
 const methodDecoratorFactory = (method: Methods) => {
   return (path: string): MethodDecorator => {
-    return (target, propertyKey) => {
-      const controllerClass = target.constructor;
-      const routers: IRoute[] = Reflect.hasMetadata(MetadataKeys.ROUTERS, controllerClass) ?
-        Reflect.getMetadata(MetadataKeys.ROUTERS, controllerClass) : [];
+    return ({ constructor: controllerClass }, propertyKey) => {
+      const controllerRouters: IRoute[] =  Reflect.getMetadata(MetadataKeys.ROUTERS, controllerClass) ?? []
 
-      routers.push({
+      const currentRouter = {
         method,
         path,
         handlerName: propertyKey
-      });
+      }
 
-      Reflect.defineMetadata(MetadataKeys.ROUTERS, routers, controllerClass);
+      const newControllerRouters = [...controllerRouters, currentRouter]
+
+      Reflect.defineMetadata(MetadataKeys.ROUTERS, newControllerRouters, controllerClass)
     }
   }
 }
 
-export const Get = methodDecoratorFactory(Methods.GET);
-export const Post = methodDecoratorFactory(Methods.POST);
-export const Put = methodDecoratorFactory(Methods.PUT);
-export const Delete = methodDecoratorFactory(Methods.DELETE);
+export const Get = methodDecoratorFactory(Methods.GET)
+export const Post = methodDecoratorFactory(Methods.POST)
+export const Put = methodDecoratorFactory(Methods.PUT)
+export const Delete = methodDecoratorFactory(Methods.DELETE)
