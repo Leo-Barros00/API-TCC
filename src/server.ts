@@ -2,6 +2,7 @@ import express, { Express } from 'express'
 
 import getRoutes from './routes'
 import LoggerMiddleware from './middlewares/loggerMiddleware'
+import ErrorHandlerMiddleware from './middlewares/errorHandlerMiddleware'
 import log, { LogType } from './utils/log'
 
 class Server {
@@ -15,6 +16,7 @@ class Server {
     this.configure()
     this.registerLogger()
     this.registerRoutes()
+    this.registerErrorHandler()
   }
 
   private configure() {
@@ -22,8 +24,12 @@ class Server {
     this.app.use(express.urlencoded({ extended: true }))
   }
 
-  public registerLogger() {
+  private registerLogger() {
     this.app.use(LoggerMiddleware.handler)
+  }
+
+  private registerErrorHandler() {
+    this.app.use(ErrorHandlerMiddleware.handler)
   }
 
   private registerRoutes() {
