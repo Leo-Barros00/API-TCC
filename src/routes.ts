@@ -4,9 +4,9 @@ import controllers from './controllers'
 import MetadataKeys from './decorators/metadataKeys'
 import { IRoute } from './decorators/handlerDecorator'
 
-type ClassConstructor<T = any> = new (...args: any[]) => T;
+type ClassConstructor<T = any> = new (...args: any[]) => T
 type ControllerInstance = {
-  [handleName: string]: Handler;
+  [handleName: string]: Handler
 }
 
 function getMethodsRouterByControllerRouters(controllerClass: ClassConstructor) {

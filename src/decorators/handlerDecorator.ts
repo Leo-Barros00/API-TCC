@@ -4,7 +4,7 @@ export enum Methods {
   GET = 'get',
   POST = 'post',
   PUT = 'put',
-  DELETE = 'delete'
+  DELETE = 'delete',
 }
 
 export interface IRoute {
@@ -16,12 +16,13 @@ export interface IRoute {
 const methodDecoratorFactory = (method: Methods) => {
   return (path: string): MethodDecorator => {
     return ({ constructor: controllerClass }, propertyKey) => {
-      const controllerRouters: IRoute[] =  Reflect.getMetadata(MetadataKeys.ROUTERS, controllerClass) ?? []
+      const controllerRouters: IRoute[] =
+        Reflect.getMetadata(MetadataKeys.ROUTERS, controllerClass) ?? []
 
       const currentRouter = {
         method,
         path,
-        handlerName: propertyKey
+        handlerName: propertyKey,
       }
 
       const newControllerRouters = [...controllerRouters, currentRouter]

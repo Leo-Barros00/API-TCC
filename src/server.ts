@@ -1,8 +1,8 @@
-import express, { Express } from "express"
+import express, { Express } from 'express'
 
-import getRoutes from "./routes"
-import LoggerMiddleware from "./middlewares/loggerMiddleware"
-import log, { LogType } from "./utils/log"
+import getRoutes from './routes'
+import LoggerMiddleware from './middlewares/loggerMiddleware'
+import log, { LogType } from './utils/log'
 
 class Server {
   private app: Express
@@ -28,7 +28,7 @@ class Server {
 
   private registerRoutes() {
     const routes = getRoutes()
-    routes.forEach(route => {
+    routes.forEach((route) => {
       this.app.use(route)
     })
   }
