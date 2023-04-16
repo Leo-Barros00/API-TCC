@@ -10,7 +10,7 @@ class AddressControler {
   public async getAllCitiesWithNeighborhoods(_: Request, res: Response, next: NextFunction) {
     try {
       const cities = await AddressServices.getAllCitiesWithNeighborhoods()
-      res.send({ cities })
+      res.send(cities)
     } catch (error) {
       next(error)
     }
