@@ -63,6 +63,8 @@ model Neighborhood {
 
 model Address {
   id             String       @id @default(uuid()) @db.Uuid
+  description    String       @db.VarChar(255)
+  number         String?      @db.VarChar(6)
   neighborhoodId String       @db.Uuid
   neighborhood   Neighborhood @relation(fields: [neighborhoodId], references: [id])
   user           User[]
