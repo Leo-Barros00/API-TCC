@@ -5,6 +5,7 @@ import { Get, Post } from '../decorators/handlerDecorator'
 import UserService from '../services/userServices'
 import AddressServices from '../services/adressServices'
 import ConflictDataException from '../exceptions/ConflictDataException'
+import ResourceNotFoundException from '../exceptions/ResourceNotFoundException'
 
 @Controller('/users')
 class UserController {
@@ -48,6 +49,23 @@ class UserController {
       }
 
       res.status(201).send({ userWithoutPassword })
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  @Post('/signIn')
+  public async signIn(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { email, password } = req.body
+
+      const userCheckEmail = await UserService.findByEmail(email)
+      console.log(email, password)
+      console.log(userCheckEmail)
+      if (userCheckEmail === null || userCheckEmail.password !== password)
+        throw new ResourceNotFoundException('Não existe um usuário cadastrado com este e-mail ou senha.')
+
+      res.status(201).send(true)
     } catch (error) {
       next(error)
     }
