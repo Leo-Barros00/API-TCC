@@ -23,19 +23,7 @@ model User {
   updatedAt   DateTime    @updatedAt
   addressId   String      @db.Uuid
   address     Address     @relation(fields: [addressId], references: [id])
-  contractors Contractor?
-  providers   Provider?
-}
-
-model Contractor {
-  userId String  @id @db.Uuid
-  user   User    @relation(fields: [userId], references: [id])
   houses House[]
-}
-
-model Provider {
-  userId String @id @db.Uuid
-  user   User   @relation(fields: [userId], references: [id])
 }
 
 model House {
@@ -43,8 +31,8 @@ model House {
   addressId    String     @db.Uuid
   address      Address    @relation(fields: [addressId], references: [id])
   metersBuilt  Int
-  contractorId String     @db.Uuid
-  contractor   Contractor @relation(fields: [contractorId], references: [userId])
+  ownerId      String     @db.Uuid
+  owner        User       @relation(fields: [ownerId], references: [id])
 }
 
 model City {
