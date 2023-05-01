@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from 'express'
+import bcrypt from 'bcryptjs'
 
 import Controller from '../decorators/controllerDecorator'
-import { Get, Post } from '../decorators/handlerDecorator'
+import { Post } from '../decorators/handlerDecorator'
 import UserService from '../services/userServices'
 import AddressServices from '../services/adressServices'
 import ConflictDataException from '../exceptions/ConflictDataException'
@@ -32,12 +33,15 @@ class UserController {
 
       const { name, surname, password, birthDate, gender } = req.body
 
+      const salt = bcrypt.genSaltSync(12)
+      const hashPassword = bcrypt.hashSync(password, salt)
+
       const newUser = await UserService.storeUser({
         name,
         surname,
         email,
         cpf,
-        password,
+        password: hashPassword,
         birthDate,
         gender: gender[0],
         addressId: userAddress.id,
@@ -63,7 +67,9 @@ class UserController {
       console.log(email, password)
       console.log(userCheckEmail)
       if (userCheckEmail === null || userCheckEmail.password !== password)
-        throw new ResourceNotFoundException('Não existe um usuário cadastrado com este e-mail ou senha.')
+        throw new ResourceNotFoundException(
+          'Não existe um usuário cadastrado com este e-mail ou senha.'
+        )
 
       res.status(201).send(true)
     } catch (error) {
