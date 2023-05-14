@@ -11,28 +11,35 @@ datasource db {
 }
 
 model User {
-  id          String      @id @default(uuid()) @db.Uuid
-  name        String      @db.VarChar(255)
-  surname     String      @db.VarChar(255)
-  email       String      @unique @db.VarChar(255)
-  password    String      @db.VarChar(255)
-  cpf         String      @unique @db.Char(11)
-  gender      String      @db.Char(1)
-  birthDate   DateTime    @db.Timestamp(6)
-  createdAt   DateTime    @default(now()) @db.Timestamp(6)
-  updatedAt   DateTime    @updatedAt
-  addressId   String      @db.Uuid
-  address     Address     @relation(fields: [addressId], references: [id])
-  houses House[]
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @db.VarChar(255)
+  surname   String   @db.VarChar(255)
+  email     String   @unique @db.VarChar(255)
+  password  String   @db.VarChar(255)
+  cpf       String   @unique @db.Char(11)
+  gender    String   @db.Char(1)
+  birthDate DateTime @db.Timestamp(6)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt
+  addressId String   @db.Uuid
+  address   Address  @relation(fields: [addressId], references: [id])
+  houses    House[]
+}
+
+model ProviderPreferences {
+  id                 String         @id @default(uuid()) @db.Uuid
+  animals            Boolean
+  neighborhoods      Neighborhood[]
+  maximumMetersBuilt Int
 }
 
 model House {
-  id           String     @id @default(uuid()) @db.Uuid
-  addressId    String     @db.Uuid
-  address      Address    @relation(fields: [addressId], references: [id])
-  metersBuilt  Int
-  ownerId      String     @db.Uuid
-  owner        User       @relation(fields: [ownerId], references: [id])
+  id          String  @id @default(uuid()) @db.Uuid
+  addressId   String  @db.Uuid
+  address     Address @relation(fields: [addressId], references: [id])
+  metersBuilt Int
+  ownerId     String  @db.Uuid
+  owner       User    @relation(fields: [ownerId], references: [id])
 }
 
 model City {
@@ -42,11 +49,13 @@ model City {
 }
 
 model Neighborhood {
-  id      String    @id @default(uuid()) @db.Uuid
-  name    String    @db.VarChar(255)
-  cityId  String    @db.Uuid
-  city    City      @relation(fields: [cityId], references: [id])
-  address Address[]
+  id                    String               @id @default(uuid()) @db.Uuid
+  name                  String               @db.VarChar(255)
+  cityId                String               @db.Uuid
+  city                  City                 @relation(fields: [cityId], references: [id])
+  address               Address[]
+  ProviderPreferences   ProviderPreferences? @relation(fields: [providerPreferencesId], references: [id])
+  providerPreferencesId String?              @db.Uuid
 }
 
 model Address {
