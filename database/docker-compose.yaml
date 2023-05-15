@@ -26,5 +26,15 @@ services:
     ports:
       - '5050:80'
 
+  authapi:
+    container_name: authapi
+    image: api-auth-tcc:latest
+    depends_on:
+      - database
+    environment:
+      - DATABASE_HOST=databasehostname
+    ports:
+      - '3330:3330'
+
 volumes:
   postgres_volume:
