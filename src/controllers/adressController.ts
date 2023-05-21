@@ -5,7 +5,7 @@ import { Get } from '../decorators/handlerDecorator'
 import AddressServices from '../services/adressServices'
 
 @Controller('/address')
-class AddressControler {
+class AddressController {
   @Get('/cities')
   public async getAllCitiesWithNeighborhoods(_: Request, res: Response, next: NextFunction) {
     try {
@@ -17,4 +17,4 @@ class AddressControler {
   }
 }
 
-export default AddressControler
+export default AddressController
