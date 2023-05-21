@@ -2,14 +2,14 @@ import { NextFunction, Request, Response } from 'express'
 import bcrypt from 'bcryptjs'
 
 import Controller from '../decorators/controllerDecorator'
-import { Post } from '../decorators/handlerDecorator'
+import { AuthContext, Post } from '../decorators/handlerDecorator'
 import UserService from '../services/userServices'
 import AddressServices from '../services/adressServices'
 import ConflictDataException from '../exceptions/ConflictDataException'
 
 @Controller('/users')
 class UserController {
-  @Post('/')
+  @Post('/', AuthContext.Unprotected)
   public async signUp(req: Request, res: Response, next: NextFunction) {
     try {
       const { email, cpf } = req.body
