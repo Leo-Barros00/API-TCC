@@ -2,10 +2,14 @@ import { Address } from '@prisma/client'
 import database from '../database'
 
 class AddressServices {
-  static async getAllCitiesWithNeighborhoods() {
-    return await database.city.findMany({
+  static async getAllStateInfo() {
+    return await database.state.findMany({
       include: {
-        neighborhoods: true,
+        cities: {
+          include: {
+            neighborhoods: true,
+          },
+        },
       },
     })
   }
