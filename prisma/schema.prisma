@@ -42,9 +42,18 @@ model House {
   owner       User    @relation(fields: [ownerId], references: [id])
 }
 
+model State {
+  id     String @id @default(uuid()) @db.Uuid
+  name   String @db.VarChar(255)
+  uf     String @db.VarChar(2)
+  cities City[]
+}
+
 model City {
   id            String         @id @default(uuid()) @db.Uuid
   name          String         @db.VarChar(255)
+  stateId       String         @db.Uuid
+  state         State          @relation(fields: [stateId], references: [id])
   neighborhoods Neighborhood[]
 }
 
