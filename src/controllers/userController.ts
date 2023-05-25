@@ -6,6 +6,7 @@ import { AuthContext, Post, Put } from '../decorators/handlerDecorator'
 import UserService from '../services/userServices'
 import AddressServices from '../services/adressServices'
 import ConflictDataException from '../exceptions/ConflictDataException'
+import database from '../database'
 
 @Controller('/users')
 class UserController {
@@ -57,12 +58,30 @@ class UserController {
     }
   }
 
-  @Put('/preferences', AuthContext.Unprotected)
+  @Put('/preferences')
   public async savePreferences(req: Request, res: Response, next: NextFunction) {
     try {
       const { userId } = res.locals
+      const { animals, maximumMetersBuilt, neighborhoods } = req.body
 
-      res.status(201).send({})
+      const mappedNeighborhoods = neighborhoods.map((neighborhood: string) => ({
+        neighborhoodId: neighborhood,
+      }))
+
+      const preferences = await database.providerPreferences.create({
+        data: {
+          userId,
+          animals,
+          maximumMetersBuilt,
+          neighborhoods: {
+            createMany: {
+              data: mappedNeighborhoods,
+            },
+          },
+        },
+      })
+
+      res.status(201).send(preferences)
     } catch (error) {
       next(error)
     }
