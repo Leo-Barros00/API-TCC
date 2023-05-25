@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import bcrypt from 'bcryptjs'
 
 import Controller from '../decorators/controllerDecorator'
-import { AuthContext, Post } from '../decorators/handlerDecorator'
+import { AuthContext, Post, Put } from '../decorators/handlerDecorator'
 import UserService from '../services/userServices'
 import AddressServices from '../services/adressServices'
 import ConflictDataException from '../exceptions/ConflictDataException'
@@ -52,6 +52,17 @@ class UserController {
       }
 
       res.status(201).send({ userWithoutPassword })
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  @Put('/preferences', AuthContext.Unprotected)
+  public async savePreferences(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId } = res.locals
+
+      res.status(201).send({})
     } catch (error) {
       next(error)
     }
