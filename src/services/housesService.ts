@@ -1,3 +1,4 @@
+import { House } from '@prisma/client'
 import database from '../database'
 
 class HousesServices {
@@ -9,15 +10,15 @@ class HousesServices {
     })
   }
 
-  //   static async storeHouse(address: Omit<House, 'id'>) {
-  //     return await database.address.create({
-  //       data: {
-  //         neighborhoodId: address.neighborhoodId,
-  //         description: address.description,
-  //         number: address.number,
-  //       },
-  //     })
-  //   }
+  static async storeHouse(house: Omit<House, 'id'>) {
+    return await database.house.create({
+      data: {
+        addressId: house.addressId,
+        metersBuilt: house.metersBuilt,
+        ownerId: house.ownerId,
+      },
+    })
+  }
 }
 
 export default HousesServices
