@@ -5,7 +5,7 @@ class HousesServices {
   static async getAllHousesByuUserId(ownerId: string) {
     return await database.house.findMany({
       where: {
-        ownerId: ownerId,
+        ownerId,
       },
     })
   }

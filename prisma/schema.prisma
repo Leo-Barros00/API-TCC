@@ -11,36 +11,36 @@ datasource db {
 }
 
 model User {
-  id          String               @id @default(uuid()) @db.Uuid
-  name        String               @db.VarChar(255)
-  surname     String               @db.VarChar(255)
-  email       String               @unique @db.VarChar(255)
-  password    String               @db.VarChar(255)
-  cpf         String               @unique @db.Char(11)
-  gender      String               @db.Char(1)
-  birthDate   DateTime             @db.Timestamp(6)
-  createdAt   DateTime             @default(now()) @db.Timestamp(6)
-  updatedAt   DateTime             @updatedAt
-  addressId   String               @db.Uuid
-  address     Address              @relation(fields: [addressId], references: [id])
-  houses      House[]
-  preferences ProviderPreferences?
+  id           String               @id @default(uuid()) @db.Uuid
+  name         String               @db.VarChar(255)
+  surname      String               @db.VarChar(255)
+  email        String               @unique @db.VarChar(255)
+  password     String               @db.VarChar(255)
+  cpf          String               @unique @db.Char(11)
+  gender       String               @db.Char(1)
+  birthDate    DateTime             @db.Timestamp(6)
+  createdAt    DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt    DateTime             @updatedAt
+  addressId    String               @db.Uuid
+  address      Address              @relation(fields: [addressId], references: [id])
+  houses       House[]
+  preferenceId String?              @unique @db.Uuid
+  preference   ProviderPreferences? @relation(fields: [preferenceId], references: [id])
 }
 
 model ProviderPreferences {
-  id                 String         @id @default(uuid()) @db.Uuid
+  id                 String                       @id @default(uuid()) @db.Uuid
   animals            Boolean
   neighborhoods      NeighborhoodsOnPreferences[]
   maximumMetersBuilt Int
-  user               User           @relation(fields: [userId], references: [id])
-  userId             String         @unique @db.Uuid
+  user               User?
 }
 
 model NeighborhoodsOnPreferences {
   providerPreferences   ProviderPreferences @relation(fields: [providerPreferencesId], references: [id])
-  providerPreferencesId String        @db.Uuid
-  neighborhood          Neighborhood       @relation(fields: [neighborhoodId], references: [id])
-  neighborhoodId        String             @db.Uuid
+  providerPreferencesId String              @db.Uuid
+  neighborhood          Neighborhood        @relation(fields: [neighborhoodId], references: [id])
+  neighborhoodId        String              @db.Uuid
 
   @@id([providerPreferencesId, neighborhoodId])
 }
@@ -70,12 +70,12 @@ model City {
 }
 
 model Neighborhood {
-  id                    String               @id @default(uuid()) @db.Uuid
-  name                  String               @db.VarChar(255)
-  cityId                String               @db.Uuid
-  city                  City                 @relation(fields: [cityId], references: [id])
-  address               Address[]
-  preferences      NeighborhoodsOnPreferences[]
+  id          String                       @id @default(uuid()) @db.Uuid
+  name        String                       @db.VarChar(255)
+  cityId      String                       @db.Uuid
+  city        City                         @relation(fields: [cityId], references: [id])
+  address     Address[]
+  preferences NeighborhoodsOnPreferences[]
 }
 
 model Address {
