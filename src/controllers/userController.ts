@@ -7,6 +7,7 @@ import UserService from '../services/userServices'
 import AddressServices from '../services/adressServices'
 import ConflictDataException from '../exceptions/ConflictDataException'
 import database from '../database'
+import { excludeFieldsFromUser } from '../utils/formatResponse'
 
 @Controller('/users')
 class UserController {
@@ -121,7 +122,16 @@ class UserController {
           id: userId,
         },
         include: {
-          houses: true,
+          houses: {
+            include: {
+              address: {
+                include: {
+                  neighborhood: true,
+                },
+              },
+            },
+          },
+          address: true,
         },
       })
 
