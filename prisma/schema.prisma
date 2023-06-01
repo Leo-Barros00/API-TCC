@@ -52,6 +52,7 @@ model House {
   metersBuilt Int
   ownerId     String  @db.Uuid
   owner       User    @relation(fields: [ownerId], references: [id])
+  animals     Boolean?
 }
 
 model State {
