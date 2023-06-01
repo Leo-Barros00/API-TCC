@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import bcrypt from 'bcryptjs'
 
 import Controller from '../decorators/controllerDecorator'
-import { AuthContext, Post, Put } from '../decorators/handlerDecorator'
+import { AuthContext, Get, Post, Put } from '../decorators/handlerDecorator'
 import UserService from '../services/userServices'
 import AddressServices from '../services/adressServices'
 import ConflictDataException from '../exceptions/ConflictDataException'
@@ -45,6 +45,7 @@ class UserController {
         birthDate,
         gender: gender[0],
         addressId: userAddress.id,
+        preferenceId: null,
       })
 
       const userWithoutPassword = {
@@ -68,20 +69,63 @@ class UserController {
         neighborhoodId: neighborhood,
       }))
 
-      const preferences = await database.providerPreferences.create({
+      await database.user.update({
+        where: {
+          id: userId,
+        },
         data: {
-          userId,
-          animals,
-          maximumMetersBuilt,
-          neighborhoods: {
-            createMany: {
-              data: mappedNeighborhoods,
+          preference: {
+            create: {
+              animals,
+              maximumMetersBuilt,
+              neighborhoods: {
+                createMany: {
+                  data: mappedNeighborhoods,
+                },
+              },
             },
           },
         },
       })
 
-      res.status(201).send(preferences)
+      res.status(201).send({})
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  @Get('/providers')
+  public async getAllProviders(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId } = res.locals
+
+      const providers = await database.user.findMany({
+        where: {
+          AND: [{ id: { not: userId } }, { preferenceId: { not: null } }],
+        },
+      })
+
+      res.status(200).send(providers)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  @Get('/')
+  public async getUser(_: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId } = res.locals
+
+      const user = await database.user.findUnique({
+        where: {
+          id: userId,
+        },
+        include: {
+          houses: true,
+        },
+      })
+
+      res.status(200).send(user)
     } catch (error) {
       next(error)
     }

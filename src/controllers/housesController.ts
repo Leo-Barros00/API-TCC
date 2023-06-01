@@ -7,7 +7,7 @@ import AddressServices from '../services/adressServices'
 
 @Controller('/house')
 class HouseController {
-  @Get('/', AuthContext.Unprotected)
+  @Get('/')
   public async getAllHousesFromUser(req: Request, res: Response, next: NextFunction) {
     try {
       const houses = await HousesServices.getAllHousesByuUserId(res.locals.userId)
@@ -18,11 +18,10 @@ class HouseController {
     }
   }
 
-  @Post('/', AuthContext.Unprotected)
+  @Post('/')
   public async saveHouseFromUser(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log(req.body)
-      const { neighborhoodId, addressDescription, addressNumber, ownerId } = req.body
+      const { neighborhoodId, addressDescription, addressNumber, metersBuilt } = req.body
 
       const newAddress = await AddressServices.storeAddress({
         description: addressDescription,
@@ -32,11 +31,11 @@ class HouseController {
 
       const userHouse = await HousesServices.storeHouse({
         addressId: newAddress.id,
-        metersBuilt: 23,
-        ownerId: ownerId,
+        metersBuilt: metersBuilt,
+        ownerId: res.locals.userId,
       })
 
-      res.send({ status: 204, userHouse })
+      res.send({ status: 201, userHouse })
     } catch (error) {
       next(error)
     }
