@@ -7,7 +7,7 @@ import UserService from '../services/userServices'
 import AddressServices from '../services/adressServices'
 import ConflictDataException from '../exceptions/ConflictDataException'
 import database from '../database'
-import { excludeFieldsFromUser } from '../utils/formatResponse'
+import BadRequestException from '../exceptions/BadRequestException'
 
 @Controller('/users')
 class UserController {
@@ -87,9 +87,16 @@ class UserController {
             },
           },
         },
+        include: {
+          preference: {
+            include: {
+              neighborhoods: true,
+            },
+          },
+        },
       })
-      console.log(userUpdated.preferenceId)
-      res.status(201).send(userUpdated.preferenceId)
+
+      res.status(201).send(userUpdated.preference)
     } catch (error) {
       next(error)
     }
