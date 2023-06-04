@@ -152,7 +152,7 @@ class UserController {
             {
               preference: {
                 maximumMetersBuilt: {
-                  lte: houseSelected.metersBuilt,
+                  gte: houseSelected.metersBuilt,
                 },
                 neighborhoods: {
                   some: {
