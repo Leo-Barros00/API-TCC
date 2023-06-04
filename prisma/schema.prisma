@@ -11,21 +11,23 @@ datasource db {
 }
 
 model User {
-  id           String               @id @default(uuid()) @db.Uuid
-  name         String               @db.VarChar(255)
-  surname      String               @db.VarChar(255)
-  email        String               @unique @db.VarChar(255)
-  password     String               @db.VarChar(255)
-  cpf          String               @unique @db.Char(11)
-  gender       String               @db.Char(1)
-  birthDate    DateTime             @db.Timestamp(6)
-  createdAt    DateTime             @default(now()) @db.Timestamp(6)
-  updatedAt    DateTime             @updatedAt
-  addressId    String               @db.Uuid
-  address      Address              @relation(fields: [addressId], references: [id])
-  houses       House[]
-  preferenceId String?              @unique @db.Uuid
-  preference   ProviderPreferences? @relation(fields: [preferenceId], references: [id])
+  id                 String               @id @default(uuid()) @db.Uuid
+  name               String               @db.VarChar(255)
+  surname            String               @db.VarChar(255)
+  email              String               @unique @db.VarChar(255)
+  password           String               @db.VarChar(255)
+  cpf                String               @unique @db.Char(11)
+  gender             String               @db.Char(1)
+  birthDate          DateTime             @db.Timestamp(6)
+  createdAt          DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt          DateTime             @updatedAt
+  addressId          String               @db.Uuid
+  address            Address              @relation(fields: [addressId], references: [id])
+  houses             House[]
+  preferenceId       String?              @unique @db.Uuid
+  preference         ProviderPreferences? @relation(fields: [preferenceId], references: [id])
+  providerContract   Contract[]           @relation("providerContract")
+  contractorContract Contract[]           @relation("contractorContract")
 }
 
 model ProviderPreferences {
@@ -46,13 +48,14 @@ model NeighborhoodsOnPreferences {
 }
 
 model House {
-  id          String  @id @default(uuid()) @db.Uuid
-  addressId   String  @db.Uuid
-  address     Address @relation(fields: [addressId], references: [id])
+  id          String     @id @default(uuid()) @db.Uuid
+  addressId   String     @db.Uuid
+  address     Address    @relation(fields: [addressId], references: [id])
   metersBuilt Int
-  ownerId     String  @db.Uuid
-  owner       User    @relation(fields: [ownerId], references: [id])
+  ownerId     String     @db.Uuid
+  owner       User       @relation(fields: [ownerId], references: [id])
   animals     Boolean?
+  Contract    Contract[]
 }
 
 model State {
@@ -87,4 +90,17 @@ model Address {
   neighborhood   Neighborhood @relation(fields: [neighborhoodId], references: [id])
   user           User[]
   House          House[]
+}
+
+model Contract {
+  id          String  @id @default(uuid()) @db.Uuid
+  description String  @db.VarChar(255)
+  value       Decimal @db.Decimal()
+
+  houseId      String @db.Uuid
+  house        House  @relation(fields: [houseId], references: [id])
+  contractorId String @db.Uuid
+  contractor   User   @relation("contractorContract", fields: [contractorId], references: [id])
+  providerId   String @db.Uuid
+  provider     User   @relation("providerContract", fields: [providerId], references: [id])
 }
