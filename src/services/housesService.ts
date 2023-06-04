@@ -18,6 +18,13 @@ class HousesServices {
         ownerId: house.ownerId,
         animals: house.animals,
       },
+      include: {
+        address: {
+          include: {
+            neighborhood: true,
+          },
+        },
+      },
     })
   }
 }
