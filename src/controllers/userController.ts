@@ -124,30 +124,56 @@ class UserController {
     try {
       const { userId } = res.locals
 
-      const user = await database.user.findUnique({
+      const user = await UserService.findById(userId)
+
+      res.status(200).send(user)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  @Get('/providers')
+  public async getProviders(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId } = res.locals
+      const { houseId } = req.query
+
+      if (!houseId) throw new BadRequestException()
+
+      const houseSelected = await database.house.findUnique({
         where: {
-          id: userId,
+          id: <string>houseId,
         },
         include: {
-          houses: {
-            include: {
-              address: {
-                include: {
-                  neighborhood: true,
-                },
-              },
-            },
-          },
-          preference: {
-            include: {
-              neighborhoods: true,
-            },
-          },
           address: true,
         },
       })
 
-      res.status(200).send(user)
+      if (!houseSelected) throw new BadRequestException()
+
+      const providers = await database.user.findMany({
+        where: {
+          AND: [
+            { id: { not: userId } },
+            {
+              preference: {
+                maximumMetersBuilt: {
+                  lte: houseSelected.metersBuilt,
+                },
+                neighborhoods: {
+                  some: {
+                    neighborhoodId: {
+                      equals: houseSelected.address.neighborhoodId,
+                    },
+                  },
+                },
+              },
+            },
+          ],
+        },
+      })
+
+      res.status(200).send({ providers })
     } catch (error) {
       next(error)
     }

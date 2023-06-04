@@ -3,9 +3,26 @@ import database from '../database'
 
 class UserService {
   static async findById(id: string) {
-    return await database.user.findFirst({
+    return await database.user.findUnique({
       where: {
         id,
+      },
+      include: {
+        houses: {
+          include: {
+            address: {
+              include: {
+                neighborhood: true,
+              },
+            },
+          },
+        },
+        preference: {
+          include: {
+            neighborhoods: true,
+          },
+        },
+        address: true,
       },
     })
   }
