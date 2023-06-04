@@ -8,6 +8,7 @@ import AddressServices from '../services/adressServices'
 import ConflictDataException from '../exceptions/ConflictDataException'
 import database from '../database'
 import BadRequestException from '../exceptions/BadRequestException'
+import HousesServices from '../services/housesService'
 
 @Controller('/users')
 class UserController {
@@ -140,14 +141,7 @@ class UserController {
 
       if (!houseId) throw new BadRequestException()
 
-      const houseSelected = await database.house.findUnique({
-        where: {
-          id: <string>houseId,
-        },
-        include: {
-          address: true,
-        },
-      })
+      const houseSelected = await HousesServices.getHouseById(<string>houseId)
 
       if (!houseSelected) throw new BadRequestException()
 

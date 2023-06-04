@@ -27,6 +27,17 @@ class HousesServices {
       },
     })
   }
+
+  static async getHouseById(houseId: string) {
+    return await database.house.findUnique({
+      where: {
+        id: houseId,
+      },
+      include: {
+        address: true,
+      },
+    })
+  }
 }
 
 export default HousesServices
