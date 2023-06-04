@@ -131,6 +131,11 @@ class UserController {
               },
             },
           },
+          preference: {
+            include: {
+              neighborhoods: true,
+            },
+          },
           address: true,
         },
       })
