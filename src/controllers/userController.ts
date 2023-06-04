@@ -70,7 +70,7 @@ class UserController {
         neighborhoodId: neighborhood,
       }))
 
-      await database.user.update({
+      const userUpdated = await database.user.update({
         where: {
           id: userId,
         },
@@ -88,8 +88,8 @@ class UserController {
           },
         },
       })
-
-      res.status(201).send({})
+      console.log(userUpdated.preferenceId)
+      res.status(201).send(userUpdated.preferenceId)
     } catch (error) {
       next(error)
     }

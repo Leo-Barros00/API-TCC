@@ -21,7 +21,8 @@ class HouseController {
   @Post('/')
   public async saveHouseFromUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const { neighborhoodId, addressDescription, addressNumber, metersBuilt } = req.body
+      console.log(req.body)
+      const { neighborhoodId, addressDescription, addressNumber, metersBuilt, animals } = req.body
 
       const newAddress = await AddressServices.storeAddress({
         description: addressDescription,
@@ -33,6 +34,7 @@ class HouseController {
         addressId: newAddress.id,
         metersBuilt: metersBuilt,
         ownerId: res.locals.userId,
+        animals: animals,
       })
 
       res.send({ status: 201, userHouse })

@@ -16,6 +16,7 @@ class HousesServices {
         addressId: house.addressId,
         metersBuilt: house.metersBuilt,
         ownerId: house.ownerId,
+        animals: house.animals,
       },
     })
   }
