@@ -95,7 +95,7 @@ model Address {
 model Contract {
   id          String   @id @default(uuid()) @db.Uuid
   description String   @db.VarChar(255)
-  value       Decimal  @db.Decimal()
+  value       Decimal  @db.Money
   date        DateTime @db.Date
   accepted    Boolean?  @db.Boolean
 
