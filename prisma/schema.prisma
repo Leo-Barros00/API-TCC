@@ -28,6 +28,7 @@ model User {
   preference         ProviderPreferences? @relation(fields: [preferenceId], references: [id])
   providerContract   Contract[]           @relation("providerContract")
   contractorContract Contract[]           @relation("contractorContract")
+  approved           Boolean              @default(false)
 }
 
 model ProviderPreferences {
