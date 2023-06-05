@@ -12,7 +12,15 @@ class UserService {
           include: {
             address: {
               include: {
-                neighborhood: true,
+                neighborhood: {
+                  include: {
+                    city: {
+                      include: {
+                        state: true,
+                      },
+                    },
+                  },
+                },
               },
             },
           },
