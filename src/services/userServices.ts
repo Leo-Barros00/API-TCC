@@ -1,37 +1,39 @@
 import { User } from '@prisma/client'
 import database from '../database'
 
+const baseUserIncludeInfo = {
+  houses: {
+    include: {
+      address: {
+        include: {
+          neighborhood: {
+            include: {
+              city: {
+                include: {
+                  state: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  preference: {
+    include: {
+      neighborhoods: true,
+    },
+  },
+  address: true,
+}
+
 class UserService {
   static async findById(id: string) {
     return await database.user.findUnique({
       where: {
         id,
       },
-      include: {
-        houses: {
-          include: {
-            address: {
-              include: {
-                neighborhood: {
-                  include: {
-                    city: {
-                      include: {
-                        state: true,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-        preference: {
-          include: {
-            neighborhoods: true,
-          },
-        },
-        address: true,
-      },
+      include: baseUserIncludeInfo,
     })
   }
 
@@ -57,6 +59,18 @@ class UserService {
       include: {
         address: true,
       },
+    })
+  }
+
+  static async approveUser(userId: string) {
+    return await database.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        approved: true,
+      },
+      include: baseUserIncludeInfo,
     })
   }
 }

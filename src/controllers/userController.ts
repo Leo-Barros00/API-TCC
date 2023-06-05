@@ -48,6 +48,7 @@ class UserController {
         gender: gender[0],
         addressId: userAddress.id,
         preferenceId: null,
+        approved: false,
       })
 
       const userWithoutPassword = {
@@ -151,6 +152,19 @@ class UserController {
       })
 
       res.status(200).send({ providers })
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  @Post('/aproveUser/:userId')
+  public async approveUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId } = req.params
+
+      const updatedUser = UserService.approveUser(userId)
+
+      res.status(200).send({ updatedUser })
     } catch (error) {
       next(error)
     }
