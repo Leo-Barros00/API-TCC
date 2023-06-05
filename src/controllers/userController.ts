@@ -103,23 +103,6 @@ class UserController {
     }
   }
 
-  @Get('/providers')
-  public async getAllProviders(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { userId } = res.locals
-
-      const providers = await database.user.findMany({
-        where: {
-          AND: [{ id: { not: userId } }, { preferenceId: { not: null } }],
-        },
-      })
-
-      res.status(200).send(providers)
-    } catch (error) {
-      next(error)
-    }
-  }
-
   @Get('/')
   public async getUser(_: Request, res: Response, next: NextFunction) {
     try {
