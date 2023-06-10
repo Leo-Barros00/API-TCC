@@ -28,6 +28,12 @@ const baseUserIncludeInfo = {
 }
 
 class UserService {
+  static async findAll() {
+    return await database.user.findMany({
+      include: baseUserIncludeInfo,
+    })
+  }
+
   static async findById(id: string) {
     return await database.user.findUnique({
       where: {
