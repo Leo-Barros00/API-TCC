@@ -1,5 +1,6 @@
 import express, { Express } from 'express'
 import ip from 'ip'
+import cors from 'cors'
 
 import getRoutes from './routes'
 import LoggerMiddleware from './middlewares/loggerMiddleware'
@@ -21,6 +22,7 @@ class Server {
   }
 
   private configure() {
+    this.app.use(cors())
     this.app.use(express.json())
     this.app.use(express.urlencoded({ extended: true }))
   }
