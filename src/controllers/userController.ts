@@ -62,6 +62,30 @@ class UserController {
     }
   }
 
+  @Get('/', AuthContext.Unprotected)
+  public async getAllUsers(_: Request, res: Response, next: NextFunction) {
+    try {
+      const users = await UserService.findAll()
+
+      res.status(200).send(users)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  @Post('/aproveUser/:userId', AuthContext.Unprotected)
+  public async approveUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId } = req.params
+
+      const updatedUser = await UserService.approveUser(userId)
+
+      res.status(200).send(updatedUser)
+    } catch (error) {
+      next(error)
+    }
+  }
+
   @Put('/preferences')
   public async savePreferences(req: Request, res: Response, next: NextFunction) {
     try {
@@ -152,19 +176,6 @@ class UserController {
       })
 
       res.status(200).send({ providers })
-    } catch (error) {
-      next(error)
-    }
-  }
-
-  @Post('/aproveUser/:userId')
-  public async approveUser(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { userId } = req.params
-
-      const updatedUser = UserService.approveUser(userId)
-
-      res.status(200).send({ updatedUser })
     } catch (error) {
       next(error)
     }
