@@ -22,6 +22,25 @@ class ContractService {
           id: ownerId,
         },
       },
+      include: {
+        house: {
+          include: {
+            address: {
+              include: {
+                neighborhood: {
+                  include: {
+                    city: {
+                      include: {
+                        state: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     })
   }
 }

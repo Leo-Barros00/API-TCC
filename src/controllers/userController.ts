@@ -104,7 +104,7 @@ class UserController {
     }
   }
 
-  @Get('/')
+  @Get('/loggedUser')
   public async getUser(_: Request, res: Response, next: NextFunction) {
     try {
       const { userId } = res.locals
