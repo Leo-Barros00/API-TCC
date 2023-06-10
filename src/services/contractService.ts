@@ -14,6 +14,16 @@ class ContractService {
       },
     })
   }
+
+  static async getContractsByUser(ownerId: string) {
+    return await database.contract.findMany({
+      where: {
+        provider: {
+          id: ownerId,
+        },
+      },
+    })
+  }
 }
 
 export default ContractService
