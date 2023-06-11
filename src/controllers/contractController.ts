@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 
 import Controller from '../decorators/controllerDecorator'
-import { Get, Post } from '../decorators/handlerDecorator'
+import { Get, Post, Put } from '../decorators/handlerDecorator'
 import ContractService from '../services/contractService'
 
 @Controller('/contract')
@@ -35,6 +35,19 @@ class ContractController {
       const contracts = await ContractService.getContractsByUser(res.locals.userId)
 
       res.send(contracts)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  @Put('/:id/:status')
+  public async updateContractStatus(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id, status } = req.params
+
+      const contracts = await ContractService.updateContractStatus(id, !!status)
+
+      res.status(200).send(contracts)
     } catch (error) {
       next(error)
     }

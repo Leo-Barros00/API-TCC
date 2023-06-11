@@ -23,6 +23,7 @@ class ContractService {
         },
       },
       include: {
+        contractor: true,
         house: {
           include: {
             address: {
@@ -40,6 +41,17 @@ class ContractService {
             },
           },
         },
+      },
+    })
+  }
+
+  static async updateContractStatus(id: string, status: boolean) {
+    return await database.contract.update({
+      where: {
+        id,
+      },
+      data: {
+        accepted: status,
       },
     })
   }
