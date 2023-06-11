@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import bcrypt from 'bcryptjs'
 
 import Controller from '../decorators/controllerDecorator'
-import { AuthContext, Get, Post, Put } from '../decorators/handlerDecorator'
+import { AuthContext, Delete, Get, Post, Put } from '../decorators/handlerDecorator'
 import UserService from '../services/userServices'
 import AddressServices from '../services/adressServices'
 import ConflictDataException from '../exceptions/ConflictDataException'
@@ -81,6 +81,19 @@ class UserController {
       const updatedUser = await UserService.approveUser(userId)
 
       res.status(200).send(updatedUser)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  @Delete('/:userId', AuthContext.Unprotected)
+  public async deleteUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId } = req.params
+
+      await UserService.deleteUser(userId)
+
+      res.status(204).send()
     } catch (error) {
       next(error)
     }

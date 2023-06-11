@@ -79,6 +79,14 @@ class UserService {
       include: baseUserIncludeInfo,
     })
   }
+
+  static async deleteUser(userId: string) {
+    return await database.user.delete({
+      where: {
+        id: userId,
+      },
+    })
+  }
 }
 
 export default UserService
