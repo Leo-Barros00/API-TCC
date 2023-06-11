@@ -22,10 +22,10 @@ model User {
   createdAt          DateTime             @default(now()) @db.Timestamp(6)
   updatedAt          DateTime             @updatedAt
   addressId          String               @db.Uuid
-  address            Address              @relation(fields: [addressId], references: [id])
+  address            Address              @relation(fields: [addressId], references: [id], onDelete: Cascade)
   houses             House[]
   preferenceId       String?              @unique @db.Uuid
-  preference         ProviderPreferences? @relation(fields: [preferenceId], references: [id])
+  preference         ProviderPreferences? @relation(fields: [preferenceId], references: [id], onDelete: Cascade)
   providerContract   Contract[]           @relation("providerContract")
   contractorContract Contract[]           @relation("contractorContract")
   approved           Boolean              @default(false)
@@ -51,10 +51,10 @@ model NeighborhoodsOnPreferences {
 model House {
   id          String     @id @default(uuid()) @db.Uuid
   addressId   String     @db.Uuid
-  address     Address    @relation(fields: [addressId], references: [id])
+  address     Address    @relation(fields: [addressId], references: [id], onDelete: Cascade)
   metersBuilt Int
   ownerId     String     @db.Uuid
-  owner       User       @relation(fields: [ownerId], references: [id])
+  owner       User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   animals     Boolean?
   Contract    Contract[]
 }
