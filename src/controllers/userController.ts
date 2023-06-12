@@ -182,6 +182,11 @@ class UserController {
                     },
                   },
                 },
+                ...(houseSelected.animals && {
+                  animals: {
+                    equals: true,
+                  },
+                }),
               },
             },
           ],
