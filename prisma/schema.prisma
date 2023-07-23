@@ -94,16 +94,16 @@ model Address {
 }
 
 model Contract {
-  id           String   @id @default(uuid()) @db.Uuid
-  description  String   @db.VarChar(255)
-  value        Decimal  @db.Money
-  date         DateTime @db.Timestamp()
-  accepted     Boolean? @db.Boolean
+  id          String   @id @default(uuid()) @db.Uuid
+  description String   @db.VarChar(255)
+  value       Decimal  @db.Money
+  date        DateTime @db.Timestamp()
+  accepted    Boolean? @db.Boolean
 
-  houseId      String   @db.Uuid
-  house        House    @relation(fields: [houseId], references: [id])
-  contractorId String   @db.Uuid
-  contractor   User     @relation("contractorContract", fields: [contractorId], references: [id])
-  providerId   String   @db.Uuid
-  provider     User     @relation("providerContract", fields: [providerId], references: [id])
+  houseId      String @db.Uuid
+  house        House  @relation(fields: [houseId], references: [id])
+  contractorId String @db.Uuid
+  contractor   User   @relation("contractorContract", fields: [contractorId], references: [id])
+  providerId   String @db.Uuid
+  provider     User   @relation("providerContract", fields: [providerId], references: [id])
 }
