@@ -30,6 +30,24 @@ const addressStateCityNeighborhood = [
       },
     ],
   },
+  {
+    stateName: 'Rio de Janeiro',
+    uf: 'RJ',
+    cities: [
+      {
+        cityName: 'Rio de Janeiro',
+        neighborhoods: [
+          'Centro',
+          'Benfica',
+          'Botafogo',
+          'Grajaú',
+          'Barra da Tijuca',
+          'Bangu',
+          'Realengo',
+        ],
+      },
+    ],
+  },
 ]
 
 async function main() {
