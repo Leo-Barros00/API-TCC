@@ -10,6 +10,12 @@ type ControllerInstance = {
   [handleName: string]: Handler
 }
 
+const authHandlers = {
+  [AuthContext.NormalUser]: AuthMiddleware.normalUserHandler,
+  [AuthContext.Admin]: AuthMiddleware.adminHandler,
+  [AuthContext.Unprotected]: null,
+}
+
 function getMethodsRouterByControllerRouters(controllerClass: ClassConstructor) {
   const controllerInstance: ControllerInstance = new controllerClass()
   const routers = Reflect.getMetadata(MetadataKeys.ROUTERS, controllerClass) as IRoute[]
@@ -17,10 +23,12 @@ function getMethodsRouterByControllerRouters(controllerClass: ClassConstructor) 
   const methodsRouter = Router()
 
   routers.forEach(({ method, path, handlerName, authContext }) => {
-    if (authContext === AuthContext.NormalUser) methodsRouter.use(AuthMiddleware.normalUserHandler)
-    else if (authContext === AuthContext.Admin) methodsRouter.use(AuthMiddleware.adminHandler)
+    const routerMainHandle = controllerInstance[String(handlerName)].bind(controllerInstance)
 
-    methodsRouter[method](path, controllerInstance[String(handlerName)].bind(controllerInstance))
+    const routeAuthHandle = authHandlers[authContext]
+
+    if (routeAuthHandle) methodsRouter[method](path, routeAuthHandle, routerMainHandle)
+    else methodsRouter[method](path, routerMainHandle)
   })
 
   return methodsRouter
