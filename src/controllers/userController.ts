@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs'
 import Controller from '../decorators/controllerDecorator'
 import { AuthContext, Delete, Get, Post, Put } from '../decorators/handlerDecorator'
 import UserService from '../services/userServices'
-import AddressServices from '../services/adressServices'
+import AddressService from '../services/adressService'
 import ConflictDataException from '../exceptions/ConflictDataException'
 import database from '../database'
 import BadRequestException from '../exceptions/BadRequestException'
@@ -27,7 +27,7 @@ class UserController {
 
       const { neighborhoodId, addressDescription, addressNumber } = req.body
 
-      const userAddress = await AddressServices.storeAddress({
+      const userAddress = await AddressService.storeAddress({
         description: addressDescription,
         neighborhoodId,
         number: addressNumber,

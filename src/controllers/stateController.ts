@@ -8,7 +8,7 @@ import BadRequestException from '../exceptions/BadRequestException'
 @Controller('/states')
 class StateController {
   @Get('/', AuthContext.Unprotected)
-  public async getAllCitiesWithNeighborhoods(_: Request, res: Response, next: NextFunction) {
+  public async getAllStatesData(_: Request, res: Response, next: NextFunction) {
     try {
       const cities = await StateService.getAllStateInfo()
       res.send(cities)

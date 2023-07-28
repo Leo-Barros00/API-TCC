@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
 
 import Controller from '../decorators/controllerDecorator'
-import { AuthContext, Get, Post } from '../decorators/handlerDecorator'
+import { Get, Post } from '../decorators/handlerDecorator'
 import HousesServices from '../services/housesService'
-import AddressServices from '../services/adressServices'
+import AddressService from '../services/adressService'
 
 @Controller('/house')
 class HouseController {
@@ -24,7 +24,7 @@ class HouseController {
       console.log(req.body)
       const { neighborhoodId, addressDescription, addressNumber, metersBuilt, animals } = req.body
 
-      const newAddress = await AddressServices.storeAddress({
+      const newAddress = await AddressService.storeAddress({
         description: addressDescription,
         neighborhoodId,
         number: addressNumber,

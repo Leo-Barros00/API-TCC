@@ -1,7 +1,7 @@
 import { State } from '@prisma/client'
 import database from '../database'
 
-class StateServices {
+class StateService {
   static async getAllStateInfo() {
     return await database.state.findMany({
       include: {
@@ -54,4 +54,4 @@ class StateServices {
   }
 }
 
-export default StateServices
+export default StateService
