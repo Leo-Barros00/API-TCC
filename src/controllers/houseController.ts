@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 
 import Controller from '../decorators/controllerDecorator'
 import { Get, Post } from '../decorators/handlerDecorator'
-import HousesServices from '../services/housesService'
+import HouseService from '../services/houseService'
 import AddressService from '../services/adressService'
 
 @Controller('/house')
@@ -10,7 +10,7 @@ class HouseController {
   @Get('/')
   public async getAllHousesFromUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const houses = await HousesServices.getAllHousesByuUserId(res.locals.userId)
+      const houses = await HouseService.getAllHousesByuUserId(res.locals.userId)
       res.send(houses)
     } catch (error) {
       next(error)
@@ -28,7 +28,7 @@ class HouseController {
         number: addressNumber,
       })
 
-      const userHouse = await HousesServices.storeHouse({
+      const userHouse = await HouseService.storeHouse({
         addressId: newAddress.id,
         metersBuilt: metersBuilt,
         ownerId: res.locals.userId,

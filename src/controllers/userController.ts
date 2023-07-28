@@ -3,12 +3,12 @@ import bcrypt from 'bcryptjs'
 
 import Controller from '../decorators/controllerDecorator'
 import { AuthContext, Delete, Get, Post, Put } from '../decorators/handlerDecorator'
-import UserService from '../services/userServices'
+import UserService from '../services/userService'
 import AddressService from '../services/adressService'
 import ConflictDataException from '../exceptions/ConflictDataException'
 import database from '../database'
 import BadRequestException from '../exceptions/BadRequestException'
-import HousesServices from '../services/housesService'
+import HouseService from '../services/houseService'
 
 @Controller('/users')
 class UserController {
@@ -162,7 +162,7 @@ class UserController {
 
       if (!houseId) throw new BadRequestException()
 
-      const houseSelected = await HousesServices.getHouseById(<string>houseId)
+      const houseSelected = await HouseService.getHouseById(<string>houseId)
 
       if (!houseSelected) throw new BadRequestException()
 

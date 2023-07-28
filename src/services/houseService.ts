@@ -1,7 +1,7 @@
 import { House } from '@prisma/client'
 import database from '../database'
 
-class HousesServices {
+class HouseService {
   static async getAllHousesByuUserId(ownerId: string) {
     return await database.house.findMany({
       where: {
@@ -40,4 +40,4 @@ class HousesServices {
   }
 }
 
-export default HousesServices
+export default HouseService
