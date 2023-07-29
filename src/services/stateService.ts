@@ -11,6 +11,9 @@ class StateService {
           },
         },
       },
+      orderBy: {
+        name: 'asc',
+      },
     })
   }
 
