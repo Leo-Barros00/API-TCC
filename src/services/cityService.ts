@@ -25,16 +25,6 @@ class CityService {
       where: { id: cityId },
     })
   }
-
-  static async getAllCityNeighborhoodsOnPreferences(cityId: string) {
-    return await database.neighborhoodsOnPreferences.findMany({
-      where: {
-        neighborhood: {
-          cityId,
-        },
-      },
-    })
-  }
 }
 
 export default CityService

@@ -5,6 +5,7 @@ import { AuthContext, Delete, Post } from '../decorators/handlerDecorator'
 import BadRequestException from '../exceptions/BadRequestException'
 import CityService from '../services/cityService'
 import AddressService from '../services/adressService'
+import NeighborhoodsOnPreferencesService from '../services/neighborhoodsOnPreferencesService'
 
 @Controller('/cities')
 class CityController {
@@ -26,7 +27,7 @@ class CityController {
 
       const [addresses, preferences] = await Promise.all([
         AddressService.getAddressByCity(cityId),
-        CityService.getAllCityNeighborhoodsOnPreferences(cityId),
+        NeighborhoodsOnPreferencesService.getNeighborhoodsOnPreferencesByCity(cityId),
       ])
 
       if (addresses.length > 0 || preferences.length > 0)

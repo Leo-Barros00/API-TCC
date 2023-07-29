@@ -5,6 +5,7 @@ import { AuthContext, Delete, Post } from '../decorators/handlerDecorator'
 import BadRequestException from '../exceptions/BadRequestException'
 import NeighborhoodService from '../services/neighborhoodService'
 import AddressService from '../services/adressService'
+import NeighborhoodsOnPreferencesService from '../services/neighborhoodsOnPreferencesService'
 
 @Controller('/neighborhoods')
 class NeighborhoodController {
@@ -26,7 +27,9 @@ class NeighborhoodController {
 
       const [addresses, preferences] = await Promise.all([
         AddressService.getAddressByNeighborhood(neighborhoodId),
-        NeighborhoodService.getAllNeighborhoodsOnPreferences(neighborhoodId),
+        NeighborhoodsOnPreferencesService.getNeighborhoodsOnPreferencesByNeighborhood(
+          neighborhoodId
+        ),
       ])
 
       if (addresses.length > 0 || preferences.length > 0)
