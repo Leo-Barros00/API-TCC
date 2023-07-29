@@ -8,8 +8,8 @@ class AddressService {
     })
   }
 
-  static async findByState(stateId: string) {
-    return await database.address.findMany({
+  static async findFirstByState(stateId: string) {
+    return await database.address.findFirst({
       where: {
         neighborhood: {
           city: {
@@ -20,8 +20,8 @@ class AddressService {
     })
   }
 
-  static async findByCity(cityId: string) {
-    return await database.address.findMany({
+  static async findFirstByCity(cityId: string) {
+    return await database.address.findFirst({
       where: {
         neighborhood: {
           cityId,
@@ -30,8 +30,8 @@ class AddressService {
     })
   }
 
-  static async findByNeighborhood(neighborhoodId: string) {
-    return await database.address.findMany({
+  static async findFirstByNeighborhood(neighborhoodId: string) {
+    return await database.address.findFirst({
       where: {
         neighborhoodId,
       },

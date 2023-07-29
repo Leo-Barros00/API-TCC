@@ -25,12 +25,12 @@ class CityController {
     try {
       const { cityId } = req.params
 
-      const [addresses, preferences] = await Promise.all([
-        AddressService.findByCity(cityId),
-        NeighborhoodsOnPreferencesService.findByCity(cityId),
+      const [address, preference] = await Promise.all([
+        AddressService.findFirstByCity(cityId),
+        NeighborhoodsOnPreferencesService.findFirstByCity(cityId),
       ])
 
-      if (addresses.length > 0 || preferences.length > 0)
+      if (address !== null || preference !== null)
         throw new BadRequestException(
           'Não é possível excluir este estado, existem endereços e preferências atrelados a ele'
         )
