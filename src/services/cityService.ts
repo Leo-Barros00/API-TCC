@@ -11,6 +11,15 @@ class CityService {
     })
   }
 
+  static async updateCity(city: City) {
+    return await database.city.update({
+      where: {
+        id: city.id,
+      },
+      data: city,
+    })
+  }
+
   static async deleteCity(cityId: string) {
     return await database.city.delete({
       where: { id: cityId },

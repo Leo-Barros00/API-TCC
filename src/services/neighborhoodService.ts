@@ -11,6 +11,15 @@ class NeighborhoodService {
     })
   }
 
+  static async updateNeighborhood(neighborhood: Neighborhood) {
+    return await database.neighborhood.update({
+      where: {
+        id: neighborhood.id,
+      },
+      data: neighborhood,
+    })
+  }
+
   static async deleteNeighborhood(neighborhoodId: string) {
     return await database.neighborhood.delete({
       where: { id: neighborhoodId },

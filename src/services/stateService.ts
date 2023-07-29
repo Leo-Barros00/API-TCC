@@ -23,6 +23,15 @@ class StateService {
     })
   }
 
+  static async updateState(state: State) {
+    return await database.state.update({
+      where: {
+        id: state.id,
+      },
+      data: state,
+    })
+  }
+
   static async deleteState(stateId: string) {
     return await database.state.delete({
       where: { id: stateId },
