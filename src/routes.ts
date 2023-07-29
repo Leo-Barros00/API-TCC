@@ -22,14 +22,15 @@ function getMethodsRouterByControllerRouters(controllerClass: ClassConstructor) 
 
   const methodsRouter = Router()
 
-  routers.forEach(({ method, path, handlerName, authContext }) => {
-    const routerMainHandle = controllerInstance[String(handlerName)].bind(controllerInstance)
+  if (routers)
+    routers.forEach(({ method, path, handlerName, authContext }) => {
+      const routerMainHandle = controllerInstance[String(handlerName)].bind(controllerInstance)
 
-    const routeAuthHandle = authHandlers[authContext]
+      const routeAuthHandle = authHandlers[authContext]
 
-    if (routeAuthHandle) methodsRouter[method](path, routeAuthHandle, routerMainHandle)
-    else methodsRouter[method](path, routerMainHandle)
-  })
+      if (routeAuthHandle) methodsRouter[method](path, routeAuthHandle, routerMainHandle)
+      else methodsRouter[method](path, routerMainHandle)
+    })
 
   return methodsRouter
 }

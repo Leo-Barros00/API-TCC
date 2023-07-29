@@ -68,7 +68,7 @@ class UserService {
     })
   }
 
-  static async approveUser(userId: string) {
+  static async approve(userId: string) {
     return await database.user.update({
       where: {
         id: userId,
@@ -80,7 +80,7 @@ class UserService {
     })
   }
 
-  static async deleteUser(userId: string) {
+  static async delete(userId: string) {
     return await database.user.delete({
       where: {
         id: userId,

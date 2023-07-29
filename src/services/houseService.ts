@@ -1,8 +1,8 @@
 import { House } from '@prisma/client'
 import database from '../database'
 
-class HousesServices {
-  static async getAllHousesByuUserId(ownerId: string) {
+class HouseService {
+  static async findAllByUserId(ownerId: string) {
     return await database.house.findMany({
       where: {
         ownerId,
@@ -10,14 +10,9 @@ class HousesServices {
     })
   }
 
-  static async storeHouse(house: Omit<House, 'id'>) {
+  static async store(house: Omit<House, 'id'>) {
     return await database.house.create({
-      data: {
-        addressId: house.addressId,
-        metersBuilt: house.metersBuilt,
-        ownerId: house.ownerId,
-        animals: house.animals,
-      },
+      data: house,
       include: {
         address: {
           include: {
@@ -28,7 +23,7 @@ class HousesServices {
     })
   }
 
-  static async getHouseById(houseId: string) {
+  static async findById(houseId: string) {
     return await database.house.findUnique({
       where: {
         id: houseId,
@@ -40,4 +35,4 @@ class HousesServices {
   }
 }
 
-export default HousesServices
+export default HouseService

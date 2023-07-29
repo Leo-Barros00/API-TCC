@@ -1,17 +1,16 @@
 import { NextFunction, Request, Response } from 'express'
 
 import Controller from '../decorators/controllerDecorator'
-import { AuthContext, Get, Post } from '../decorators/handlerDecorator'
-import HousesServices from '../services/housesService'
-import AddressServices from '../services/adressServices'
+import { Get, Post } from '../decorators/handlerDecorator'
+import HouseService from '../services/houseService'
+import AddressService from '../services/adressService'
 
-@Controller('/house')
+@Controller('/houses')
 class HouseController {
   @Get('/')
   public async getAllHousesFromUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const houses = await HousesServices.getAllHousesByuUserId(res.locals.userId)
-      console.log(houses)
+      const houses = await HouseService.findAllByUserId(res.locals.userId)
       res.send(houses)
     } catch (error) {
       next(error)
@@ -21,16 +20,15 @@ class HouseController {
   @Post('/')
   public async saveHouseFromUser(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log(req.body)
       const { neighborhoodId, addressDescription, addressNumber, metersBuilt, animals } = req.body
 
-      const newAddress = await AddressServices.storeAddress({
+      const newAddress = await AddressService.store({
         description: addressDescription,
         neighborhoodId,
         number: addressNumber,
       })
 
-      const userHouse = await HousesServices.storeHouse({
+      const userHouse = await HouseService.store({
         addressId: newAddress.id,
         metersBuilt: metersBuilt,
         ownerId: res.locals.userId,

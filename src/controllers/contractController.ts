@@ -4,7 +4,7 @@ import Controller from '../decorators/controllerDecorator'
 import { Get, Post, Put } from '../decorators/handlerDecorator'
 import ContractService from '../services/contractService'
 
-@Controller('/contract')
+@Controller('/contracts')
 class ContractController {
   @Post('/send')
   public async sendNewContract(req: Request, res: Response, next: NextFunction) {

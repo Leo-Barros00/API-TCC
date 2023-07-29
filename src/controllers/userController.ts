@@ -3,12 +3,12 @@ import bcrypt from 'bcryptjs'
 
 import Controller from '../decorators/controllerDecorator'
 import { AuthContext, Delete, Get, Post, Put } from '../decorators/handlerDecorator'
-import UserService from '../services/userServices'
-import AddressServices from '../services/adressServices'
+import UserService from '../services/userService'
+import AddressService from '../services/adressService'
 import ConflictDataException from '../exceptions/ConflictDataException'
 import database from '../database'
 import BadRequestException from '../exceptions/BadRequestException'
-import HousesServices from '../services/housesService'
+import HouseService from '../services/houseService'
 
 @Controller('/users')
 class UserController {
@@ -27,7 +27,7 @@ class UserController {
 
       const { neighborhoodId, addressDescription, addressNumber } = req.body
 
-      const userAddress = await AddressServices.storeAddress({
+      const userAddress = await AddressService.store({
         description: addressDescription,
         neighborhoodId,
         number: addressNumber,
@@ -78,7 +78,7 @@ class UserController {
     try {
       const { userId } = req.params
 
-      const updatedUser = await UserService.approveUser(userId)
+      const updatedUser = await UserService.approve(userId)
 
       res.status(200).send(updatedUser)
     } catch (error) {
@@ -91,7 +91,7 @@ class UserController {
     try {
       const { userId } = req.params
 
-      await UserService.deleteUser(userId)
+      await UserService.delete(userId)
 
       res.status(204).send()
     } catch (error) {
@@ -162,7 +162,7 @@ class UserController {
 
       if (!houseId) throw new BadRequestException()
 
-      const houseSelected = await HousesServices.getHouseById(<string>houseId)
+      const houseSelected = await HouseService.findById(<string>houseId)
 
       if (!houseSelected) throw new BadRequestException()
 
