@@ -5,7 +5,7 @@ import { Get, Post } from '../decorators/handlerDecorator'
 import HouseService from '../services/houseService'
 import AddressService from '../services/adressService'
 
-@Controller('/house')
+@Controller('/houses')
 class HouseController {
   @Get('/')
   public async getAllHousesFromUser(req: Request, res: Response, next: NextFunction) {
