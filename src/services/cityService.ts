@@ -26,16 +26,6 @@ class CityService {
     })
   }
 
-  static async getAllCityAddresses(cityId: string) {
-    return await database.address.findMany({
-      where: {
-        neighborhood: {
-          cityId,
-        },
-      },
-    })
-  }
-
   static async getAllCityNeighborhoodsOnPreferences(cityId: string) {
     return await database.neighborhoodsOnPreferences.findMany({
       where: {

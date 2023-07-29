@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from 'express'
 import Controller from '../decorators/controllerDecorator'
 import { AuthContext, Delete, Get, Post } from '../decorators/handlerDecorator'
 import StateService from '../services/stateService'
+import AddressService from '../services/adressService'
 import BadRequestException from '../exceptions/BadRequestException'
 
 @Controller('/states')
@@ -34,7 +35,7 @@ class StateController {
       const { stateId } = req.params
 
       const [addresses, preferences] = await Promise.all([
-        StateService.getAllStateAddresses(stateId),
+        AddressService.getAddressByState(stateId),
         StateService.getAllStateNeighborhoodsOnPreferences(stateId),
       ])
 

@@ -38,18 +38,6 @@ class StateService {
     })
   }
 
-  static async getAllStateAddresses(stateId: string) {
-    return await database.address.findMany({
-      where: {
-        neighborhood: {
-          city: {
-            stateId,
-          },
-        },
-      },
-    })
-  }
-
   static async getAllStateNeighborhoodsOnPreferences(stateId: string) {
     return await database.neighborhoodsOnPreferences.findMany({
       where: {
