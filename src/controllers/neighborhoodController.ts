@@ -32,7 +32,7 @@ class NeighborhoodController {
 
       if (address !== null || preference !== null)
         throw new BadRequestException(
-          'Não é possível excluir este estado, existem endereços e preferências atrelados a ele'
+          'Não é possível excluir este bairro, existem endereços e preferências atrelados a ele'
         )
 
       await NeighborhoodService.delete(neighborhoodId)
