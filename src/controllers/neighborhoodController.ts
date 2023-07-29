@@ -13,7 +13,7 @@ class NeighborhoodController {
   public async addNewNeighborhood(req: Request, res: Response, next: NextFunction) {
     try {
       const { name, cityId } = req.body
-      const newNeighborhood = await NeighborhoodService.storeNeighborhood({ name, cityId })
+      const newNeighborhood = await NeighborhoodService.store({ name, cityId })
       res.send(newNeighborhood)
     } catch (error) {
       next(error)
@@ -26,10 +26,8 @@ class NeighborhoodController {
       const { neighborhoodId } = req.params
 
       const [addresses, preferences] = await Promise.all([
-        AddressService.getAddressByNeighborhood(neighborhoodId),
-        NeighborhoodsOnPreferencesService.getNeighborhoodsOnPreferencesByNeighborhood(
-          neighborhoodId
-        ),
+        AddressService.findByNeighborhood(neighborhoodId),
+        NeighborhoodsOnPreferencesService.findByNeighborhood(neighborhoodId),
       ])
 
       if (addresses.length > 0 || preferences.length > 0)
@@ -37,7 +35,7 @@ class NeighborhoodController {
           'Não é possível excluir este estado, existem endereços e preferências atrelados a ele'
         )
 
-      await NeighborhoodService.deleteNeighborhood(neighborhoodId)
+      await NeighborhoodService.delete(neighborhoodId)
       res.sendStatus(204)
     } catch (error) {
       next(error)

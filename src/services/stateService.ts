@@ -14,7 +14,7 @@ class StateService {
     })
   }
 
-  static async storeState(state: Omit<State, 'id'>) {
+  static async store(state: Omit<State, 'id'>) {
     return await database.state.create({
       data: {
         name: state.name,
@@ -23,7 +23,7 @@ class StateService {
     })
   }
 
-  static async updateState(state: State) {
+  static async update(state: State) {
     return await database.state.update({
       where: {
         id: state.id,
@@ -32,7 +32,7 @@ class StateService {
     })
   }
 
-  static async deleteState(stateId: string) {
+  static async delete(stateId: string) {
     return await database.state.delete({
       where: { id: stateId },
     })

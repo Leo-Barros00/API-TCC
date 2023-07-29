@@ -2,7 +2,7 @@ import { Neighborhood } from '@prisma/client'
 import database from '../database'
 
 class NeighborhoodService {
-  static async storeNeighborhood(neighborhood: Omit<Neighborhood, 'id'>) {
+  static async store(neighborhood: Omit<Neighborhood, 'id'>) {
     return await database.neighborhood.create({
       data: {
         name: neighborhood.name,
@@ -11,7 +11,7 @@ class NeighborhoodService {
     })
   }
 
-  static async updateNeighborhood(neighborhood: Neighborhood) {
+  static async update(neighborhood: Neighborhood) {
     return await database.neighborhood.update({
       where: {
         id: neighborhood.id,
@@ -20,7 +20,7 @@ class NeighborhoodService {
     })
   }
 
-  static async deleteNeighborhood(neighborhoodId: string) {
+  static async delete(neighborhoodId: string) {
     return await database.neighborhood.delete({
       where: { id: neighborhoodId },
     })

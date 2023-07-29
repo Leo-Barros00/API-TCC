@@ -2,13 +2,13 @@ import { Address } from '@prisma/client'
 import database from '../database'
 
 class AddressService {
-  static async storeAddress(address: Omit<Address, 'id'>) {
+  static async store(address: Omit<Address, 'id'>) {
     return await database.address.create({
       data: address,
     })
   }
 
-  static async getAddressByState(stateId: string) {
+  static async findByState(stateId: string) {
     return await database.address.findMany({
       where: {
         neighborhood: {
@@ -20,7 +20,7 @@ class AddressService {
     })
   }
 
-  static async getAddressByCity(cityId: string) {
+  static async findByCity(cityId: string) {
     return await database.address.findMany({
       where: {
         neighborhood: {
@@ -30,7 +30,7 @@ class AddressService {
     })
   }
 
-  static async getAddressByNeighborhood(neighborhoodId: string) {
+  static async findByNeighborhood(neighborhoodId: string) {
     return await database.address.findMany({
       where: {
         neighborhoodId,

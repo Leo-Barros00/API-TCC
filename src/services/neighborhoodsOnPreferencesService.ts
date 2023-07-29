@@ -2,7 +2,7 @@ import { Neighborhood } from '@prisma/client'
 import database from '../database'
 
 class NeighborhoodsOnPreferencesService {
-  static async getNeighborhoodsOnPreferencesByState(stateId: string) {
+  static async findByState(stateId: string) {
     return await database.neighborhoodsOnPreferences.findMany({
       where: {
         neighborhood: {
@@ -14,7 +14,7 @@ class NeighborhoodsOnPreferencesService {
     })
   }
 
-  static async getNeighborhoodsOnPreferencesByCity(cityId: string) {
+  static async findByCity(cityId: string) {
     return await database.neighborhoodsOnPreferences.findMany({
       where: {
         neighborhood: {
@@ -24,7 +24,7 @@ class NeighborhoodsOnPreferencesService {
     })
   }
 
-  static async getNeighborhoodsOnPreferencesByNeighborhood(neighborhoodId: string) {
+  static async findByNeighborhood(neighborhoodId: string) {
     return await database.neighborhoodsOnPreferences.findMany({
       where: {
         neighborhoodId,

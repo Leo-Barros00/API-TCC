@@ -27,7 +27,7 @@ class UserController {
 
       const { neighborhoodId, addressDescription, addressNumber } = req.body
 
-      const userAddress = await AddressService.storeAddress({
+      const userAddress = await AddressService.store({
         description: addressDescription,
         neighborhoodId,
         number: addressNumber,
@@ -78,7 +78,7 @@ class UserController {
     try {
       const { userId } = req.params
 
-      const updatedUser = await UserService.approveUser(userId)
+      const updatedUser = await UserService.approve(userId)
 
       res.status(200).send(updatedUser)
     } catch (error) {
@@ -91,7 +91,7 @@ class UserController {
     try {
       const { userId } = req.params
 
-      await UserService.deleteUser(userId)
+      await UserService.delete(userId)
 
       res.status(204).send()
     } catch (error) {
@@ -162,7 +162,7 @@ class UserController {
 
       if (!houseId) throw new BadRequestException()
 
-      const houseSelected = await HouseService.getHouseById(<string>houseId)
+      const houseSelected = await HouseService.findById(<string>houseId)
 
       if (!houseSelected) throw new BadRequestException()
 

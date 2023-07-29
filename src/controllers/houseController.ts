@@ -10,7 +10,7 @@ class HouseController {
   @Get('/')
   public async getAllHousesFromUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const houses = await HouseService.getAllHousesByuUserId(res.locals.userId)
+      const houses = await HouseService.findAllByUserId(res.locals.userId)
       res.send(houses)
     } catch (error) {
       next(error)
@@ -22,13 +22,13 @@ class HouseController {
     try {
       const { neighborhoodId, addressDescription, addressNumber, metersBuilt, animals } = req.body
 
-      const newAddress = await AddressService.storeAddress({
+      const newAddress = await AddressService.store({
         description: addressDescription,
         neighborhoodId,
         number: addressNumber,
       })
 
-      const userHouse = await HouseService.storeHouse({
+      const userHouse = await HouseService.store({
         addressId: newAddress.id,
         metersBuilt: metersBuilt,
         ownerId: res.locals.userId,
