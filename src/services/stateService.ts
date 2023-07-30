@@ -7,7 +7,14 @@ class StateService {
       include: {
         cities: {
           include: {
-            neighborhoods: true,
+            neighborhoods: {
+              orderBy: {
+                name: 'asc',
+              },
+            },
+          },
+          orderBy: {
+            name: 'asc',
           },
         },
       },
