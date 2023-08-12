@@ -198,6 +198,21 @@ class UserController {
       next(error)
     }
   }
+
+  @Get('/:userId', AuthContext.Unprotected)
+  public async getUserById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId } = req.params
+
+      const user = await UserService.findById(userId)
+
+      console.log({ user })
+
+      res.status(200).send(user)
+    } catch (error) {
+      next(error)
+    }
+  }
 }
 
 export default UserController
