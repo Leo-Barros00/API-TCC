@@ -1,22 +1,24 @@
 import { User } from '@prisma/client'
 import database from '../database'
 
-const baseUserIncludeInfo = {
-  houses: {
-    include: {
-      address: {
-        include: {
-          neighborhood: {
-            include: {
-              city: {
-                include: {
-                  state: true,
-                },
-              },
-            },
+const baseAddressIncludeInfo = {
+  include: {
+    neighborhood: {
+      include: {
+        city: {
+          include: {
+            state: true,
           },
         },
       },
+    },
+  },
+}
+
+const baseUserIncludeInfo = {
+  houses: {
+    include: {
+      address: baseAddressIncludeInfo,
     },
   },
   preference: {
@@ -24,7 +26,7 @@ const baseUserIncludeInfo = {
       neighborhoods: true,
     },
   },
-  address: true,
+  address: baseAddressIncludeInfo,
 }
 
 class UserService {
