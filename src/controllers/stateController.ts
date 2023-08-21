@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 
 import Controller from '../decorators/controllerDecorator'
-import { AuthContext, Delete, Get, Post } from '../decorators/handlerDecorator'
+import { AuthContext, Delete, Get, Post, Put } from '../decorators/handlerDecorator'
 import StateService from '../services/stateService'
 import AddressService from '../services/adressService'
 import BadRequestException from '../exceptions/BadRequestException'
@@ -25,6 +25,19 @@ class StateController {
       const { name, uf } = req.body
       const newState = await StateService.store({ name, uf })
       res.send(newState)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  @Put('/:stateId', AuthContext.Unprotected)
+  public async update(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { stateId } = req.params
+      const { name, uf } = req.body
+
+      const newStateData = await StateService.update({ id: stateId, name, uf })
+      res.status(200).send(newStateData)
     } catch (error) {
       next(error)
     }
