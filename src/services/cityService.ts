@@ -16,7 +16,9 @@ class CityService {
       where: {
         id: city.id,
       },
-      data: city,
+      data: {
+        name: city.name,
+      },
     })
   }
 

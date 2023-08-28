@@ -19,17 +19,6 @@ class StateController {
     }
   }
 
-  @Post('/', AuthContext.Unprotected)
-  public async addNewState(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { name, uf } = req.body
-      const newState = await StateService.store({ name, uf })
-      res.send(newState)
-    } catch (error) {
-      next(error)
-    }
-  }
-
   @Put('/:stateId', AuthContext.Unprotected)
   public async update(req: Request, res: Response, next: NextFunction) {
     try {

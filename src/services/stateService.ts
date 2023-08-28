@@ -24,15 +24,6 @@ class StateService {
     })
   }
 
-  static async store(state: Omit<State, 'id'>) {
-    return await database.state.create({
-      data: {
-        name: state.name,
-        uf: state.uf,
-      },
-    })
-  }
-
   static async update(state: State) {
     return await database.state.update({
       where: {

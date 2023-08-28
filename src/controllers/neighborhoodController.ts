@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 
 import Controller from '../decorators/controllerDecorator'
-import { AuthContext, Delete, Post } from '../decorators/handlerDecorator'
+import { AuthContext, Delete, Post, Put } from '../decorators/handlerDecorator'
 import BadRequestException from '../exceptions/BadRequestException'
 import NeighborhoodService from '../services/neighborhoodService'
 import AddressService from '../services/adressService'
@@ -9,12 +9,22 @@ import NeighborhoodsOnPreferencesService from '../services/neighborhoodsOnPrefer
 
 @Controller('/neighborhoods')
 class NeighborhoodController {
-  @Post('/')
+  @Post('/', AuthContext.Unprotected)
   public async addNewNeighborhood(req: Request, res: Response, next: NextFunction) {
     try {
       const { name, cityId } = req.body
       const newNeighborhood = await NeighborhoodService.store({ name, cityId })
       res.send(newNeighborhood)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  @Put('/:neighborhoodId', AuthContext.Unprotected)
+  public async updateCity(req: Request, res: Response, next: NextFunction) {
+    try {
+      const updatedNeighborhood = await NeighborhoodService.update(req.body)
+      res.send(updatedNeighborhood)
     } catch (error) {
       next(error)
     }

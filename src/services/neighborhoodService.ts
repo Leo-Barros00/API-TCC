@@ -16,7 +16,9 @@ class NeighborhoodService {
       where: {
         id: neighborhood.id,
       },
-      data: neighborhood,
+      data: {
+        name: neighborhood.name,
+      },
     })
   }
 
