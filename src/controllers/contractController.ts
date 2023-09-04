@@ -52,6 +52,17 @@ class ContractController {
       next(error)
     }
   }
+
+  @Get('/:idContractor')
+  public async getAllContractsByContractor(_: Request, res: Response, next: NextFunction) {
+    try {
+      const contratos = await ContractService.getAllContractsByContractor(res.locals.contractId)
+
+      res.send(contratos)
+    } catch (erro) {
+      next(erro)
+    }
+  }
 }
 
 export default ContractController

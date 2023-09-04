@@ -45,6 +45,36 @@ class ContractService {
     })
   }
 
+  static async getContractorId(contractId: string) {
+    return await database.contract.findMany({
+      where: {
+        provider: {
+          id: contractId,
+        },
+      },
+      include: {
+        contractor: true,
+        house: {
+          include: {
+            address: {
+              include: {
+                neighborhood: {
+                  include: {
+                    city: {
+                      include: {
+                        state: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    })
+  }
+
   static async updateContractStatus(id: string, status: boolean) {
     return await database.contract.update({
       where: {
