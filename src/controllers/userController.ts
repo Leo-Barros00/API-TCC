@@ -63,11 +63,12 @@ class UserController {
   }
 
   @Get('/', AuthContext.Unprotected)
-  public async getAllUsers(_: Request, res: Response, next: NextFunction) {
+  public async getAllUsers(req: Request, res: Response, next: NextFunction) {
     try {
-      const users = await UserService.findAll()
+      const queryOptions = req.query
+      const queryData = await UserService.findAll(queryOptions)
 
-      res.status(200).send(users)
+      res.status(200).send(queryData)
     } catch (error) {
       next(error)
     }

@@ -29,11 +29,57 @@ const baseUserIncludeInfo = {
   address: baseAddressIncludeInfo,
 }
 
+interface UserQueryOptions {
+  orderBy?: string
+  order?: 'asc' | 'desc'
+  page?: string
+  perPage?: string
+  email?: string
+  name?: string
+  surname?: string
+  cpf?: string
+  birthDate?: string
+  gender?: string
+  createdAt?: string
+  approved?: string
+}
+
 class UserService {
-  static async findAll() {
-    return await database.user.findMany({
-      include: baseUserIncludeInfo,
-    })
+  static async findAll({ order, orderBy, page, perPage, ...filters }: UserQueryOptions) {
+    const whereClause = Object.entries(filters).reduce((acc, [key, value]) => {
+      return [
+        ...acc,
+        {
+          [key]: {
+            contains: value,
+            mode: 'insensitive',
+          },
+        },
+      ]
+    }, [] as any[])
+
+    const [users, totalCount] = await Promise.all([
+      database.user.findMany({
+        where: {
+          AND: whereClause,
+        },
+        include: {
+          ...baseUserIncludeInfo,
+        },
+        ...{
+          ...(orderBy && {
+            orderBy: {
+              [orderBy || 'createdAt']: order || 'asc',
+            },
+          }),
+        },
+        take: parseInt(perPage || '10'),
+        skip: parseInt(page || '0'),
+      }),
+      database.user.count({}),
+    ])
+
+    return { users, totalCount }
   }
 
   static async findById(id: string) {
