@@ -11,6 +11,7 @@ class ContractService {
         contractorId: contract.contractorId,
         houseId: contract.houseId,
         providerId: contract.providerId,
+        workHours: contract.workHours,
       },
     })
   }

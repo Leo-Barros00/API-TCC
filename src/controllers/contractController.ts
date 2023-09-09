@@ -9,7 +9,7 @@ class ContractController {
   @Post('/send')
   public async sendNewContract(req: Request, res: Response, next: NextFunction) {
     try {
-      const { value, date, description, houseId, providerId } = req.body
+      const { value, date, description, houseId, providerId, workHours } = req.body
 
       const contractModel = {
         value: value,
@@ -19,7 +19,10 @@ class ContractController {
         houseId: houseId,
         providerId: providerId,
         accepted: null,
+        workHours: workHours,
       }
+
+      console.log(JSON.stringify(contractModel))
 
       await ContractService.sendNewContract(contractModel)
 

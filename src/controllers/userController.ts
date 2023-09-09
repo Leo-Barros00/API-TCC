@@ -104,7 +104,17 @@ class UserController {
   public async savePreferences(req: Request, res: Response, next: NextFunction) {
     try {
       const { userId } = res.locals
-      const { animals, maximumMetersBuilt, neighborhoods } = req.body
+      const {
+        animals,
+        maximumMetersBuilt,
+        neighborhoods,
+        workFourHoursPerDay,
+        workSixHoursPerDay,
+        workEightHoursPerDay,
+        priceFourHours,
+        priceSixHours,
+        priceEightHours,
+      } = req.body
 
       const mappedNeighborhoods = neighborhoods.map((neighborhood: string) => ({
         neighborhoodId: neighborhood,
@@ -116,9 +126,15 @@ class UserController {
         },
         data: {
           preference: {
-            create: {
+            update: {
               animals,
               maximumMetersBuilt,
+              workFourHoursPerDay: workFourHoursPerDay,
+              workSixHoursPerDay: workSixHoursPerDay,
+              workEightHoursPerDay: workEightHoursPerDay,
+              priceFourHours: priceFourHours,
+              priceSixHours: priceSixHours,
+              priceEightHours: priceEightHours,
               neighborhoods: {
                 createMany: {
                   data: mappedNeighborhoods,
@@ -191,6 +207,9 @@ class UserController {
               },
             },
           ],
+        },
+        include: {
+          preference: true,
         },
       })
 

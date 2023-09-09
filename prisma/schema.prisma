@@ -32,11 +32,17 @@ model User {
 }
 
 model ProviderPreferences {
-  id                 String                       @id @default(uuid()) @db.Uuid
-  animals            Boolean
-  neighborhoods      NeighborhoodsOnPreferences[]
-  maximumMetersBuilt Int
-  user               User?
+  id                   String                       @id @default(uuid()) @db.Uuid
+  animals              Boolean
+  neighborhoods        NeighborhoodsOnPreferences[]
+  maximumMetersBuilt   Int
+  workFourHoursPerDay  Int?
+  workSixHoursPerDay   Int?
+  workEightHoursPerDay Int?
+  priceFourHours       Decimal?                     @db.Money
+  priceSixHours        Decimal?                     @db.Money
+  priceEightHours      Decimal?                     @db.Money
+  user                 User?
 }
 
 model NeighborhoodsOnPreferences {
@@ -99,6 +105,7 @@ model Contract {
   value       Decimal  @db.Money
   date        DateTime @db.Timestamp()
   accepted    Boolean? @db.Boolean
+  workHours   Int      @db.Integer 
 
   houseId      String @db.Uuid
   house        House  @relation(fields: [houseId], references: [id])
