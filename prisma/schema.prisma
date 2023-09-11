@@ -28,7 +28,16 @@ model User {
   preference         ProviderPreferences? @relation(fields: [preferenceId], references: [id], onDelete: Cascade)
   providerContract   Contract[]           @relation("providerContract")
   contractorContract Contract[]           @relation("contractorContract")
-  approved           Boolean              @default(false)
+  status             String               @default("pending")
+  rejectReasons      RejectReason[]
+}
+
+model RejectReason {
+  id        String   @id @default(uuid()) @db.Uuid
+  reason    String   @db.VarChar(255)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  userId    String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model ProviderPreferences {
@@ -105,7 +114,7 @@ model Contract {
   value       Decimal  @db.Money
   date        DateTime @db.Timestamp()
   accepted    Boolean? @db.Boolean
-  workHours   Int      @db.Integer 
+  workHours   Int      @db.Integer
 
   houseId      String @db.Uuid
   house        House  @relation(fields: [houseId], references: [id])
