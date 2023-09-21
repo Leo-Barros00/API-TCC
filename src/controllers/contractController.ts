@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 
-import Controller from '../decorators/controllerDecorator'
+import Controller from '../decorators/Controller'
 import { Get, Post, Put } from '../decorators/handlerDecorator'
 import ContractService from '../services/contractService'
 
@@ -61,7 +61,7 @@ class ContractController {
     try {
       const contratos = await ContractService.getAllContractsByContractor(res.locals.contractId)
 
-      res.send(contratos)
+      res.status(200).send(contratos)
     } catch (erro) {
       next(erro)
     }

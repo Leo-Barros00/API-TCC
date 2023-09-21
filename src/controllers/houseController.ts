@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
 
-import Controller from '../decorators/controllerDecorator'
+import Controller from '../decorators/Controller'
 import { Get, Post } from '../decorators/handlerDecorator'
-import HouseService from '../services/houseService'
 import AddressService from '../services/adressService'
+import HouseService from '../services/houseService'
 
 @Controller('/houses')
 class HouseController {

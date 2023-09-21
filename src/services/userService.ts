@@ -21,6 +21,16 @@ const baseUserIncludeInfo = {
       address: baseAddressIncludeInfo,
     },
   },
+  providerContract: {
+    include: {
+      provider: true,
+    },
+  },
+  contractorContract: {
+    include: {
+      contractor: true,
+    },
+  },
   preference: {
     include: {
       neighborhoods: true,
@@ -122,7 +132,7 @@ class UserService {
         id: userId,
       },
       data: {
-        approved: true,
+        status: 'aprovado',
       },
       include: baseUserIncludeInfo,
     })

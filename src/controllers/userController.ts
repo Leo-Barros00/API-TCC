@@ -1,14 +1,14 @@
-import { NextFunction, Request, Response } from 'express'
 import bcrypt from 'bcryptjs'
+import { NextFunction, Request, Response } from 'express'
 
-import Controller from '../decorators/controllerDecorator'
-import { AuthContext, Delete, Get, Post, Put } from '../decorators/handlerDecorator'
-import UserService from '../services/userService'
-import AddressService from '../services/adressService'
-import ConflictDataException from '../exceptions/ConflictDataException'
 import database from '../database'
+import Controller from '../decorators/Controller'
+import { AuthContext, Delete, Get, Post, Put } from '../decorators/handlerDecorator'
 import BadRequestException from '../exceptions/BadRequestException'
+import ConflictDataException from '../exceptions/ConflictDataException'
+import AddressService from '../services/adressService'
 import HouseService from '../services/houseService'
+import UserService from '../services/userService'
 
 @Controller('/users')
 class UserController {
@@ -48,7 +48,7 @@ class UserController {
         gender: gender[0],
         addressId: userAddress.id,
         preferenceId: null,
-        approved: false,
+        status: 'aprovado',
       })
 
       const userWithoutPassword = {
@@ -58,6 +58,7 @@ class UserController {
 
       res.status(201).send({ userWithoutPassword })
     } catch (error) {
+      console.log(error)
       next(error)
     }
   }
@@ -126,7 +127,7 @@ class UserController {
         },
         data: {
           preference: {
-            update: {
+            create: {
               animals,
               maximumMetersBuilt,
               workFourHoursPerDay: workFourHoursPerDay,
@@ -154,6 +155,7 @@ class UserController {
 
       res.status(201).send(userUpdated.preference)
     } catch (error) {
+      console.log(error)
       next(error)
     }
   }
@@ -164,7 +166,7 @@ class UserController {
       const { userId } = res.locals
 
       const user = await UserService.findById(userId)
-
+      console.log(JSON.stringify(user))
       res.status(200).send(user)
     } catch (error) {
       next(error)

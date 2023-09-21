@@ -1,7 +1,4 @@
-import { NextFunction, Request, Response } from 'express'
-
-import Controller from '../decorators/controllerDecorator'
-import AddressService from '../services/adressService'
+import Controller from '../decorators/Controller'
 
 @Controller('/address')
 class AddressController {}

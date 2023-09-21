@@ -46,7 +46,7 @@ class ContractService {
     })
   }
 
-  static async getContractorId(contractId: string) {
+  static async getAllContractsByContractor(contractId: string) {
     return await database.contract.findMany({
       where: {
         provider: {

@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express'
 
-import Controller from '../decorators/controllerDecorator'
+import Controller from '../decorators/Controller'
 import { AuthContext, Delete, Post, Put } from '../decorators/handlerDecorator'
 import BadRequestException from '../exceptions/BadRequestException'
-import NeighborhoodService from '../services/neighborhoodService'
 import AddressService from '../services/adressService'
+import NeighborhoodService from '../services/neighborhoodService'
 import NeighborhoodsOnPreferencesService from '../services/neighborhoodsOnPreferencesService'
 
 @Controller('/neighborhoods')
