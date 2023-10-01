@@ -11,60 +11,115 @@ datasource db {
 }
 
 model User {
-  id          String      @id @default(uuid()) @db.Uuid
-  name        String      @db.VarChar(255)
-  surname     String      @db.VarChar(255)
-  email       String      @unique @db.VarChar(255)
-  password    String      @db.VarChar(255)
-  cpf         String      @unique @db.Char(11)
-  gender      String      @db.Char(1)
-  birthDate   DateTime    @db.Timestamp(6)
-  createdAt   DateTime    @default(now()) @db.Timestamp(6)
-  updatedAt   DateTime    @updatedAt
-  addressId   String      @db.Uuid
-  address     Address     @relation(fields: [addressId], references: [id])
-  contractors Contractor?
-  providers   Provider?
+  id                 String               @id @default(uuid()) @db.Uuid
+  name               String               @db.VarChar(255)
+  surname            String               @db.VarChar(255)
+  email              String               @unique @db.VarChar(255)
+  password           String               @db.VarChar(255)
+  cpf                String               @unique @db.Char(11)
+  gender             String               @db.Char(1)
+  birthDate          DateTime             @db.Timestamp(6)
+  createdAt          DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt          DateTime             @updatedAt
+  addressId          String               @db.Uuid
+  address            Address              @relation(fields: [addressId], references: [id], onDelete: Cascade)
+  houses             House[]
+  preferenceId       String?              @unique @db.Uuid
+  preference         ProviderPreferences? @relation(fields: [preferenceId], references: [id], onDelete: Cascade)
+  providerContract   Contract[]           @relation("providerContract")
+  contractorContract Contract[]           @relation("contractorContract")
+  status             String               @default("pending")
+  rejectReasons      RejectReason[]
 }
 
-model Contractor {
-  userId String  @id @db.Uuid
-  user   User    @relation(fields: [userId], references: [id])
-  houses House[]
+model RejectReason {
+  id        String   @id @default(uuid()) @db.Uuid
+  reason    String   @db.VarChar(255)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  userId    String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Provider {
-  userId String @id @db.Uuid
-  user   User   @relation(fields: [userId], references: [id])
+model ProviderPreferences {
+  id                   String                       @id @default(uuid()) @db.Uuid
+  animals              Boolean
+  neighborhoods        NeighborhoodsOnPreferences[]
+  maximumMetersBuilt   Int
+  workFourHoursPerDay  Int?
+  workSixHoursPerDay   Int?
+  workEightHoursPerDay Int?
+  priceFourHours       Decimal?                     @db.Money
+  priceSixHours        Decimal?                     @db.Money
+  priceEightHours      Decimal?                     @db.Money
+  user                 User?
+}
+
+model NeighborhoodsOnPreferences {
+  providerPreferences   ProviderPreferences @relation(fields: [providerPreferencesId], references: [id])
+  providerPreferencesId String              @db.Uuid
+  neighborhood          Neighborhood        @relation(fields: [neighborhoodId], references: [id])
+  neighborhoodId        String              @db.Uuid
+
+  @@id([providerPreferencesId, neighborhoodId])
 }
 
 model House {
-  id           String     @id @default(uuid()) @db.Uuid
-  addressId    String     @db.Uuid
-  address      Address    @relation(fields: [addressId], references: [id])
-  metersBuilt  Int
-  contractorId String     @db.Uuid
-  contractor   Contractor @relation(fields: [contractorId], references: [userId])
+  id          String     @id @default(uuid()) @db.Uuid
+  addressId   String     @db.Uuid
+  address     Address    @relation(fields: [addressId], references: [id], onDelete: Cascade)
+  metersBuilt Int
+  ownerId     String     @db.Uuid
+  owner       User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  animals     Boolean?
+  Contract    Contract[]
+}
+
+model State {
+  id     String @id @default(uuid()) @db.Uuid
+  name   String @db.VarChar(255)
+  uf     String @db.VarChar(2)
+  cities City[]
 }
 
 model City {
   id            String         @id @default(uuid()) @db.Uuid
   name          String         @db.VarChar(255)
+  stateId       String         @db.Uuid
+  state         State          @relation(fields: [stateId], references: [id], onDelete: Cascade)
   neighborhoods Neighborhood[]
 }
 
 model Neighborhood {
-  id      String    @id @default(uuid()) @db.Uuid
-  name    String    @db.VarChar(255)
-  cityId  String    @db.Uuid
-  city    City      @relation(fields: [cityId], references: [id])
-  address Address[]
+  id          String                       @id @default(uuid()) @db.Uuid
+  name        String                       @db.VarChar(255)
+  cityId      String                       @db.Uuid
+  city        City                         @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  address     Address[]
+  preferences NeighborhoodsOnPreferences[]
 }
 
 model Address {
   id             String       @id @default(uuid()) @db.Uuid
+  description    String       @db.VarChar(255)
+  number         String?      @db.VarChar(6)
   neighborhoodId String       @db.Uuid
-  neighborhood   Neighborhood @relation(fields: [neighborhoodId], references: [id])
+  neighborhood   Neighborhood @relation(fields: [neighborhoodId], references: [id], onDelete: Cascade)
   user           User[]
   House          House[]
+}
+
+model Contract {
+  id          String   @id @default(uuid()) @db.Uuid
+  description String   @db.VarChar(255)
+  value       Decimal  @db.Money
+  date        DateTime @db.Timestamp()
+  accepted    Boolean? @db.Boolean
+  workHours   Int      @db.Integer
+
+  houseId      String @db.Uuid
+  house        House  @relation(fields: [houseId], references: [id])
+  contractorId String @db.Uuid
+  contractor   User   @relation("contractorContract", fields: [contractorId], references: [id])
+  providerId   String @db.Uuid
+  provider     User   @relation("providerContract", fields: [providerId], references: [id])
 }

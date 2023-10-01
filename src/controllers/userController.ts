@@ -1,14 +1,239 @@
-import { Request, Response } from 'express'
+import bcrypt from 'bcryptjs'
+import { NextFunction, Request, Response } from 'express'
 
-import Controller from '../decorators/controllerDecorator'
-import { Get } from '../decorators/handlerDecorator'
+import database from '../database'
+import Controller from '../decorators/Controller'
+import { AuthContext, Delete, Get, Post, Put } from '../decorators/handlerDecorator'
+import BadRequestException from '../exceptions/BadRequestException'
+import ConflictDataException from '../exceptions/ConflictDataException'
+import AddressService from '../services/adressService'
+import HouseService from '../services/houseService'
+import UserService from '../services/userService'
 
 @Controller('/users')
 class UserController {
+  @Post('/', AuthContext.Unprotected)
+  public async signUp(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { email, cpf } = req.body
 
-  @Get('/signup')
-  public async signUp(req: Request, res: Response) {
-    res.send({ message: 'Hello World!' })
+      const userCheckEmail = await UserService.findByEmail(email)
+      if (userCheckEmail !== null)
+        throw new ConflictDataException('Já existe um usuário cadastrado com este e-mail.')
+
+      const userCheckCpf = await UserService.findByCpf(cpf)
+      if (userCheckCpf !== null)
+        throw new ConflictDataException('Já existe um usuário cadastrado com este CPF.')
+
+      const { neighborhoodId, addressDescription, addressNumber } = req.body
+
+      const userAddress = await AddressService.store({
+        description: addressDescription,
+        neighborhoodId,
+        number: addressNumber,
+      })
+
+      const { name, surname, password, birthDate, gender } = req.body
+
+      const salt = bcrypt.genSaltSync(12)
+      const hashPassword = bcrypt.hashSync(password, salt)
+
+      const newUser = await UserService.storeUser({
+        name,
+        surname,
+        email,
+        cpf,
+        password: hashPassword,
+        birthDate,
+        gender: gender[0],
+        addressId: userAddress.id,
+        preferenceId: null,
+        status: 'aprovado',
+      })
+
+      const userWithoutPassword = {
+        ...newUser,
+        password: null,
+      }
+
+      res.status(201).send({ userWithoutPassword })
+    } catch (error) {
+      console.log(error)
+      next(error)
+    }
+  }
+
+  @Get('/', AuthContext.Unprotected)
+  public async getAllUsers(req: Request, res: Response, next: NextFunction) {
+    try {
+      const queryOptions = req.query
+      const queryData = await UserService.findAll(queryOptions)
+
+      res.status(200).send(queryData)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  @Post('/aproveUser/:userId', AuthContext.Unprotected)
+  public async approveUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId } = req.params
+
+      const updatedUser = await UserService.approve(userId)
+
+      res.status(200).send(updatedUser)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  @Delete('/:userId', AuthContext.Unprotected)
+  public async deleteUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId } = req.params
+
+      await UserService.delete(userId)
+
+      res.status(204).send()
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  @Put('/preferences')
+  public async savePreferences(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId } = res.locals
+      const {
+        animals,
+        maximumMetersBuilt,
+        neighborhoods,
+        workFourHoursPerDay,
+        workSixHoursPerDay,
+        workEightHoursPerDay,
+        priceFourHours,
+        priceSixHours,
+        priceEightHours,
+      } = req.body
+
+      const mappedNeighborhoods = neighborhoods.map((neighborhood: string) => ({
+        neighborhoodId: neighborhood,
+      }))
+
+      const userUpdated = await database.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          preference: {
+            create: {
+              animals,
+              maximumMetersBuilt,
+              workFourHoursPerDay: workFourHoursPerDay,
+              workSixHoursPerDay: workSixHoursPerDay,
+              workEightHoursPerDay: workEightHoursPerDay,
+              priceFourHours: priceFourHours,
+              priceSixHours: priceSixHours,
+              priceEightHours: priceEightHours,
+              neighborhoods: {
+                createMany: {
+                  data: mappedNeighborhoods,
+                },
+              },
+            },
+          },
+        },
+        include: {
+          preference: {
+            include: {
+              neighborhoods: true,
+            },
+          },
+        },
+      })
+
+      res.status(201).send(userUpdated.preference)
+    } catch (error) {
+      console.log(error)
+      next(error)
+    }
+  }
+
+  @Get('/loggedUser')
+  public async getUser(_: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId } = res.locals
+
+      const user = await UserService.findById(userId)
+      console.log(JSON.stringify(user))
+      res.status(200).send(user)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  @Get('/providers')
+  public async getProviders(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId } = res.locals
+      const { houseId } = req.query
+
+      if (!houseId) throw new BadRequestException()
+
+      const houseSelected = await HouseService.findById(<string>houseId)
+
+      if (!houseSelected) throw new BadRequestException()
+
+      const providers = await database.user.findMany({
+        where: {
+          AND: [
+            { id: { not: userId } },
+            {
+              preference: {
+                maximumMetersBuilt: {
+                  gte: houseSelected.metersBuilt,
+                },
+                neighborhoods: {
+                  some: {
+                    neighborhoodId: {
+                      equals: houseSelected.address.neighborhoodId,
+                    },
+                  },
+                },
+                ...(houseSelected.animals && {
+                  animals: {
+                    equals: true,
+                  },
+                }),
+              },
+            },
+          ],
+        },
+        include: {
+          preference: true,
+        },
+      })
+
+      res.status(200).send({ providers })
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  @Get('/:userId', AuthContext.Unprotected)
+  public async getUserById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId } = req.params
+
+      const user = await UserService.findById(userId)
+
+      console.log({ user })
+
+      res.status(200).send(user)
+    } catch (error) {
+      next(error)
+    }
   }
 }
 

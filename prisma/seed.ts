@@ -1,50 +1,86 @@
 import database from '../src/database'
 import log, { LogType } from '../src/utils/log'
 
-const addressCityNeighborhood = [
+const addressStateCityNeighborhood = [
   {
-    cityName: 'Campinas',
-    neighborhoods: [
-      'Centro',
-      'Cambuí',
-      'Barão Geraldo',
-      'Cidade Universitária',
-      'Taquaral',
-      'Nova Campinas',
-      'Satélite Íris',
+    stateName: 'São Paulo',
+    uf: 'SP',
+    cities: [
+      {
+        cityName: 'Campinas',
+        neighborhoods: [
+          'Centro',
+          'Cambuí',
+          'Barão Geraldo',
+          'Cidade Universitária',
+          'Taquaral',
+          'Nova Campinas',
+          'Satélite Íris',
+        ],
+      },
+      {
+        cityName: 'Valinhos',
+        neighborhoods: [
+          'Centro',
+          'Jardim Centenário',
+          'Vera Cruz',
+          'Jardim São Marcos',
+          'Dois Córregos',
+        ],
+      },
     ],
   },
   {
-    cityName: 'Valinhos',
-    neighborhoods: [
-      'Centro',
-      'Jardim Centenário',
-      'Vera Cruz',
-      'Jardim São Marcos',
-      'Dois Córregos',
+    stateName: 'Rio de Janeiro',
+    uf: 'RJ',
+    cities: [
+      {
+        cityName: 'Rio de Janeiro',
+        neighborhoods: [
+          'Centro',
+          'Benfica',
+          'Botafogo',
+          'Grajaú',
+          'Barra da Tijuca',
+          'Bangu',
+          'Realengo',
+        ],
+      },
     ],
   },
 ]
 
 async function main() {
-  // Seeding citys and neighborhoods
-  await addressCityNeighborhood.reduce(async (memo, { cityName, neighborhoods }) => {
+  // Seeding states, citys and neighborhoods
+  await addressStateCityNeighborhood.reduce(async (memo, { stateName, uf, cities }) => {
     await memo
 
-    const neighborhoodFormatted = neighborhoods.map((neighborhoodName) => ({
-      name: neighborhoodName,
-    }))
-
-    await database.city.create({
+    const state = await database.state.create({
       data: {
-        name: cityName,
-        neighborhoods: {
-          createMany: {
-            data: neighborhoodFormatted,
-          },
-        },
+        name: stateName,
+        uf,
       },
     })
+
+    await cities.reduce(async (memo, { cityName, neighborhoods }) => {
+      await memo
+
+      const neighborhoodFormatted = neighborhoods.map((neighborhoodName) => ({
+        name: neighborhoodName,
+      }))
+
+      await database.city.create({
+        data: {
+          name: cityName,
+          stateId: state.id,
+          neighborhoods: {
+            createMany: {
+              data: neighborhoodFormatted,
+            },
+          },
+        },
+      })
+    }, undefined as any)
   }, undefined as any)
 
   log(LogType.SUCCESS, 'SEED', 'Database seeded')

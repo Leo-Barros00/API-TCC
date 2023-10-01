@@ -1,4 +1,6 @@
 import express, { Express } from 'express'
+import ip from 'ip'
+import cors from 'cors'
 
 import getRoutes from './routes'
 import LoggerMiddleware from './middlewares/loggerMiddleware'
@@ -20,6 +22,7 @@ class Server {
   }
 
   private configure() {
+    this.app.use(cors())
     this.app.use(express.json())
     this.app.use(express.urlencoded({ extended: true }))
   }
@@ -39,8 +42,15 @@ class Server {
     })
   }
 
+  private logNetworkInfo() {
+    const localNetworkAddress = ip.address()
+    log(LogType.INFO, 'INFO', `Local address:   http://127.0.0.1:${this.port}`)
+    log(LogType.INFO, 'INFO', `Network address: http://${localNetworkAddress}:${this.port}`)
+  }
+
   public start() {
     this.app.listen(this.port, () => {
+      this.logNetworkInfo()
       log(LogType.SUCCESS, 'START', `Listening sever on port ${this.port}`)
     })
   }

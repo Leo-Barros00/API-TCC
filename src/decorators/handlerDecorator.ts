@@ -11,10 +11,17 @@ export interface IRoute {
   method: Methods
   path: string
   handlerName: string | symbol
+  authContext: AuthContext
+}
+
+export enum AuthContext {
+  NormalUser = 'normal',
+  Admin = 'admin',
+  Unprotected = 'unprotected',
 }
 
 const methodDecoratorFactory = (method: Methods) => {
-  return (path: string): MethodDecorator => {
+  return (path: string, authContext = AuthContext.NormalUser): MethodDecorator => {
     return ({ constructor: controllerClass }, propertyKey) => {
       const controllerRouters: IRoute[] =
         Reflect.getMetadata(MetadataKeys.ROUTERS, controllerClass) ?? []
@@ -23,6 +30,7 @@ const methodDecoratorFactory = (method: Methods) => {
         method,
         path,
         handlerName: propertyKey,
+        authContext,
       }
 
       const newControllerRouters = [...controllerRouters, currentRouter]

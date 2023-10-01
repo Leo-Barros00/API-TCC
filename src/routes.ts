@@ -2,11 +2,18 @@ import { Handler, Router } from 'express'
 
 import controllers from './controllers'
 import MetadataKeys from './decorators/metadataKeys'
-import { IRoute } from './decorators/handlerDecorator'
+import { AuthContext, IRoute } from './decorators/handlerDecorator'
+import AuthMiddleware from './middlewares/authMiddleware'
 
 type ClassConstructor<T = any> = new (...args: any[]) => T
 type ControllerInstance = {
   [handleName: string]: Handler
+}
+
+const authHandlers = {
+  [AuthContext.NormalUser]: AuthMiddleware.normalUserHandler,
+  [AuthContext.Admin]: AuthMiddleware.adminHandler,
+  [AuthContext.Unprotected]: null,
 }
 
 function getMethodsRouterByControllerRouters(controllerClass: ClassConstructor) {
@@ -15,9 +22,15 @@ function getMethodsRouterByControllerRouters(controllerClass: ClassConstructor) 
 
   const methodsRouter = Router()
 
-  routers.forEach(({ method, path, handlerName }) => {
-    methodsRouter[method](path, controllerInstance[String(handlerName)].bind(controllerInstance))
-  })
+  if (routers)
+    routers.forEach(({ method, path, handlerName, authContext }) => {
+      const routerMainHandle = controllerInstance[String(handlerName)].bind(controllerInstance)
+
+      const routeAuthHandle = authHandlers[authContext]
+
+      if (routeAuthHandle) methodsRouter[method](path, routeAuthHandle, routerMainHandle)
+      else methodsRouter[method](path, routerMainHandle)
+    })
 
   return methodsRouter
 }
