@@ -9,6 +9,8 @@ import ConflictDataException from '../exceptions/ConflictDataException'
 import AddressService from '../services/adressService'
 import HouseService from '../services/houseService'
 import UserService from '../services/userService'
+import { renameImage } from '../utils/images'
+import RejectReasonService from '../services/rejectReasonService'
 
 @Controller('/users')
 class UserController {
@@ -48,7 +50,7 @@ class UserController {
         gender: gender[0],
         addressId: userAddress.id,
         preferenceId: null,
-        status: 'aprovado',
+        status: 'pending',
       })
 
       const userWithoutPassword = {
@@ -56,9 +58,13 @@ class UserController {
         password: null,
       }
 
+      if (req.files) {
+        renameImage('documentImage', newUser.id, req.files)
+        renameImage('personImage', newUser.id, req.files)
+      }
+
       res.status(201).send({ userWithoutPassword })
     } catch (error) {
-      console.log(error)
       next(error)
     }
   }
@@ -75,12 +81,17 @@ class UserController {
     }
   }
 
-  @Post('/aproveUser/:userId', AuthContext.Unprotected)
-  public async approveUser(req: Request, res: Response, next: NextFunction) {
+  @Put('/status/:userId', AuthContext.Unprotected)
+  public async changeUserStatus(req: Request, res: Response, next: NextFunction) {
     try {
       const { userId } = req.params
+      const { status, reason } = req.body
 
-      const updatedUser = await UserService.approve(userId)
+      if (status === 'rejected') {
+        await RejectReasonService.store(userId, reason)
+      }
+
+      const updatedUser = await UserService.changeStatus(userId, status)
 
       res.status(200).send(updatedUser)
     } catch (error) {
@@ -227,8 +238,6 @@ class UserController {
       const { userId } = req.params
 
       const user = await UserService.findById(userId)
-
-      console.log({ user })
 
       res.status(200).send(user)
     } catch (error) {
