@@ -112,7 +112,8 @@ model Contract {
   id          String   @id @default(uuid()) @db.Uuid
   description String   @db.VarChar(255)
   value       Decimal  @db.Money
-  date        DateTime @db.Timestamp()
+  startDate   DateTime @db.Timestamp()
+  endDate     DateTime @db.Timestamp()
   accepted    Boolean? @db.Boolean
   workHours   Int      @db.Integer
 

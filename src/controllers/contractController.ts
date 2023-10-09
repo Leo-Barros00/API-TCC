@@ -13,7 +13,7 @@ class ContractController {
 
       const contractModel = {
         value: value,
-        date: date,
+        startDate: date,
         description: description,
         contractorId: res.locals.userId,
         houseId: houseId,
@@ -21,8 +21,6 @@ class ContractController {
         accepted: null,
         workHours: workHours,
       }
-
-      console.log(JSON.stringify(contractModel))
 
       await ContractService.sendNewContract(contractModel)
 
