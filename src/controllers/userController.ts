@@ -188,7 +188,7 @@ class UserController {
   public async getProviders(req: Request, res: Response, next: NextFunction) {
     try {
       const { userId } = res.locals
-      const { houseId } = req.query
+      const { houseId, startDate, workHours } = req.query
 
       if (!houseId) throw new BadRequestException()
 
@@ -196,7 +196,10 @@ class UserController {
 
       if (!houseSelected) throw new BadRequestException()
 
-      const providers = await database.user.findMany({
+      const startDateParsed = new Date(startDate as string)
+      const endDateParsed = addHours(startDateParsed, Number(workHours))
+
+      const availableProviders = await database.user.findMany({
         where: {
           AND: [
             { id: { not: userId } },
@@ -219,6 +222,34 @@ class UserController {
                 }),
               },
             },
+            {
+              providerContract: {
+                none: {
+                  OR: [
+                    {
+                      // 1. Termina durante
+                      startDate: { lte: startDateParsed },
+                      endDate: { gte: startDateParsed, lte: endDateParsed },
+                    },
+                    {
+                      // 2. Começa durante
+                      startDate: { gte: startDateParsed, lte: endDateParsed },
+                      endDate: { gte: endDateParsed },
+                    },
+                    {
+                      // 3. Abrange totalmente
+                      startDate: { lte: startDateParsed },
+                      endDate: { gte: endDateParsed },
+                    },
+                    {
+                      // 4. Dentro
+                      startDate: { gte: startDateParsed },
+                      endDate: { lte: endDateParsed },
+                    },
+                  ],
+                },
+              },
+            },
           ],
         },
         include: {
@@ -226,7 +257,7 @@ class UserController {
         },
       })
 
-      res.status(200).send({ providers })
+      res.status(200).send({ providers: availableProviders })
     } catch (error) {
       next(error)
     }
