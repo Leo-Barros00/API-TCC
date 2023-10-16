@@ -118,7 +118,6 @@ class UserController {
       const { userId } = res.locals
       const {
         animals,
-        maximumMetersBuilt,
         neighborhoods,
         workFourHoursPerDay,
         workSixHoursPerDay,
@@ -140,7 +139,6 @@ class UserController {
           preference: {
             create: {
               animals,
-              maximumMetersBuilt,
               workFourHoursPerDay: workFourHoursPerDay,
               workSixHoursPerDay: workSixHoursPerDay,
               workEightHoursPerDay: workEightHoursPerDay,
@@ -205,9 +203,6 @@ class UserController {
             { id: { not: userId } },
             {
               preference: {
-                maximumMetersBuilt: {
-                  gte: houseSelected.metersBuilt,
-                },
                 neighborhoods: {
                   some: {
                     neighborhoodId: {
