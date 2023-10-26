@@ -51,7 +51,7 @@ class UserController {
         gender: gender[0],
         addressId: userAddress.id,
         preferenceId: null,
-        status: 'pending',
+        status: 'approved',
       })
 
       const userWithoutPassword = {
@@ -204,6 +204,21 @@ class UserController {
             { id: { not: userId } },
             {
               preference: {
+                ...(workHours?.toString() === '4' && {
+                  workFourHoursPerDay: {
+                    not: null,
+                  },
+                }),
+                ...(workHours === '6' && {
+                  workSixHoursPerDay: {
+                    not: null,
+                  },
+                }),
+                ...(workHours === '8' && {
+                  workEightHoursPerDay: {
+                    not: null,
+                  },
+                }),
                 neighborhoods: {
                   some: {
                     neighborhoodId: {
