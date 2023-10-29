@@ -126,7 +126,7 @@ class UserService {
     })
   }
 
-  static async storeUser(userData: Omit<User, 'id' | 'createdAt' | 'updatedAt'>) {
+  static async storeUser(userData: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'balance'>) {
     return await database.user.create({
       data: userData,
       include: {
