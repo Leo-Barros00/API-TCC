@@ -30,6 +30,7 @@ model User {
   contractorContract Contract[]           @relation("contractorContract")
   status             String               @default("pending")
   rejectReasons      RejectReason[]
+  balance            Decimal              @db.Money @default(0.0)
 }
 
 model RejectReason {
