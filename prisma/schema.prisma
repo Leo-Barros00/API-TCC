@@ -116,6 +116,7 @@ model Contract {
   endDate     DateTime @db.Timestamp()
   accepted    Boolean? @db.Boolean
   workHours   Int      @db.Integer
+  finished    Boolean  @db.Boolean @default(false)
 
   houseId      String @db.Uuid
   house        House  @relation(fields: [houseId], references: [id])

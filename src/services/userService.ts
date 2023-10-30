@@ -154,6 +154,25 @@ class UserService {
       },
     })
   }
+
+  static async addBalance(userId: string, balanceToAdd: number) {
+    const user = await database.user.findUnique({
+      where: {
+        id: userId,
+      },
+    })
+
+    if (!user) throw new Error()
+
+    return database.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        balance: Number(user.balance) + balanceToAdd,
+      },
+    })
+  }
 }
 
 export default UserService

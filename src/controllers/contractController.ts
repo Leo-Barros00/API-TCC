@@ -3,23 +3,24 @@ import { NextFunction, Request, Response } from 'express'
 import Controller from '../decorators/Controller'
 import { Get, Post, Put } from '../decorators/handlerDecorator'
 import ContractService from '../services/contractService'
+import UserService from '../services/userService'
 
 @Controller('/contracts')
 class ContractController {
   @Post('/send')
   public async sendNewContract(req: Request, res: Response, next: NextFunction) {
     try {
-      const { value, date, description, houseId, providerId, workHours } = req.body
+      const { value, startDate, description, houseId, providerId, workHours } = req.body
 
       const contractModel = {
-        value: value,
-        startDate: date,
-        description: description,
+        value,
+        startDate,
+        description,
         contractorId: res.locals.userId,
-        houseId: houseId,
-        providerId: providerId,
+        houseId,
+        providerId,
         accepted: null,
-        workHours: workHours,
+        workHours,
       }
 
       await ContractService.sendNewContract(contractModel)
@@ -49,6 +50,21 @@ class ContractController {
       const contracts = await ContractService.updateContractStatus(id, !!status)
 
       res.status(200).send(contracts)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  @Put('/finish/:id')
+  public async finishContract(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params
+
+      const contract = await ContractService.finishContract(id)
+
+      UserService.addBalance(res.locals.userId, Number(contract.value))
+
+      res.status(200).send(contract)
     } catch (error) {
       next(error)
     }
