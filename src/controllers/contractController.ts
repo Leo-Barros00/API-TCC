@@ -3,7 +3,11 @@ import { NextFunction, Request, Response } from 'express'
 import Controller from '../decorators/Controller'
 import { Get, Post, Put } from '../decorators/handlerDecorator'
 import ContractService from '../services/contractService'
+<<<<<<< Updated upstream
 import UserService from '../services/userService'
+=======
+import { stat } from 'fs'
+>>>>>>> Stashed changes
 
 @Controller('/contracts')
 class ContractController {
@@ -13,9 +17,15 @@ class ContractController {
       const { value, startDate, description, houseId, providerId, workHours } = req.body
 
       const contractModel = {
+<<<<<<< Updated upstream
         value,
         startDate,
         description,
+=======
+        value: value,
+        startDate,
+        description: description,
+>>>>>>> Stashed changes
         contractorId: res.locals.userId,
         houseId,
         providerId,
@@ -23,10 +33,11 @@ class ContractController {
         workHours,
       }
 
-      await ContractService.sendNewContract(contractModel)
-
+      const response = await ContractService.sendNewContract(contractModel)
+      console.log(response)
       res.status(201).send()
     } catch (error) {
+      console.log(error)
       next(error)
     }
   }
@@ -47,7 +58,9 @@ class ContractController {
     try {
       const { id, status } = req.params
 
-      const contracts = await ContractService.updateContractStatus(id, !!status)
+      console.log(status)
+      console.log(Boolean(status))
+      const contracts = await ContractService.updateContractStatus(id, status === `true`)
 
       res.status(200).send(contracts)
     } catch (error) {
