@@ -116,7 +116,7 @@ model Contract {
   endDate        DateTime @db.Timestamp()
   accepted       Boolean? @db.Boolean
   workHours      Int      @db.Integer
-  progressStatus String   @default("NotStarted") @db.VarChar(20)
+  progressStatus String   @default("pending") @db.VarChar(20)
 
   houseId      String @db.Uuid
   house        House  @relation(fields: [houseId], references: [id])
