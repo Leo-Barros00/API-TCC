@@ -86,16 +86,18 @@ class ContractService {
     })
   }
 
-  static async finishContract(id: string) {
-    return await database.contract.update({
-      where: {
-        id,
-      },
-      data: {
-        finished: true,
-      },
-    })
-  }
+  // WIP contract status
+
+  // static async finishContract(id: string) {
+  //   return await database.contract.update({
+  //     where: {
+  //       id,
+  //     },
+  //     data: {
+  //       finished: true,
+  //     },
+  //   })
+  // }
 }
 
 export default ContractService

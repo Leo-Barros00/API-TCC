@@ -65,11 +65,13 @@ class ContractController {
     try {
       const { id } = req.params
 
-      const contract = await ContractService.finishContract(id)
+      // WIP contract status endpoint
 
-      UserService.addBalance(res.locals.userId, Number(contract.value))
+      // const contract = await ContractService.finishContract(id)
 
-      res.status(200).send(contract)
+      // UserService.addBalance(res.locals.userId, Number(contract.value))
+
+      // res.status(200).send(contract)
     } catch (error) {
       next(error)
     }
