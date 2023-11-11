@@ -31,6 +31,7 @@ model User {
   status             String               @default("pending")
   avaliations        Avaliation[]         @relation("userAvaliation")
   rejectReasons      RejectReason[]
+  balance            Decimal              @default(0.0) @db.Money
 }
 
 model RejectReason {
@@ -45,7 +46,6 @@ model ProviderPreferences {
   id                   String                       @id @default(uuid()) @db.Uuid
   animals              Boolean
   neighborhoods        NeighborhoodsOnPreferences[]
-  maximumMetersBuilt   Int
   workFourHoursPerDay  Int?
   workSixHoursPerDay   Int?
   workEightHoursPerDay Int?
@@ -110,12 +110,14 @@ model Address {
 }
 
 model Contract {
-  id          String   @id @default(uuid()) @db.Uuid
-  description String   @db.VarChar(255)
-  value       Decimal  @db.Money
-  date        DateTime @db.Timestamp()
-  accepted    Boolean? @db.Boolean
-  workHours   Int      @db.Integer
+  id             String   @id @default(uuid()) @db.Uuid
+  description    String   @db.VarChar(255)
+  value          Decimal  @db.Money
+  startDate      DateTime @db.Timestamp()
+  endDate        DateTime @db.Timestamp()
+  accepted       Boolean? @db.Boolean
+  workHours      Int      @db.Integer
+  progressStatus String   @default("pending") @db.VarChar(20)
 
   houseId      String @db.Uuid
   house        House  @relation(fields: [houseId], references: [id])
