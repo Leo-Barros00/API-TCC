@@ -132,5 +132,5 @@ model Withdrawl {
   userId String   @db.Uuid
   user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   value  Decimal  @db.Money
-  date   DateTime @db.Timestamp()
+  date   DateTime @default(now()) @db.Timestamp()
 }
