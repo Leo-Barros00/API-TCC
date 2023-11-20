@@ -31,6 +31,7 @@ model User {
   status             String               @default("pending")
   rejectReasons      RejectReason[]
   balance            Decimal              @default(0.0) @db.Money
+  withdraws          Withdrawl[]
 }
 
 model RejectReason {
@@ -124,4 +125,12 @@ model Contract {
   contractor   User   @relation("contractorContract", fields: [contractorId], references: [id])
   providerId   String @db.Uuid
   provider     User   @relation("providerContract", fields: [providerId], references: [id])
+}
+
+model Withdrawl {
+  id     String   @id @default(uuid()) @db.Uuid
+  userId String   @db.Uuid
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  value  Decimal  @db.Money
+  date   DateTime @db.Timestamp()
 }
