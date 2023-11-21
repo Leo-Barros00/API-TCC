@@ -5,6 +5,7 @@ import ContractController from './contractController'
 import StateController from './stateController'
 import CityController from './cityController'
 import NeighborhoodController from './neighborhoodController'
+import WithdrawController from './withdrawController'
 
 export default [
   UserController,
@@ -14,4 +15,5 @@ export default [
   StateController,
   CityController,
   NeighborhoodController,
+  WithdrawController,
 ]

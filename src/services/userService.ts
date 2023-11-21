@@ -173,6 +173,34 @@ class UserService {
       },
     })
   }
+
+  static async withdrawBalance(userId: string, balanceToWithdraw: number) {
+    const user = await database.user.findUnique({
+      where: {
+        id: userId,
+      },
+    })
+
+    if (!user) throw new Error()
+
+    return database.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        balance: Number(user.balance) - balanceToWithdraw,
+      },
+      include: {
+        ...baseUserIncludeInfo,
+        rejectReasons: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+          take: 1,
+        },
+      },
+    })
+  }
 }
 
 export default UserService
