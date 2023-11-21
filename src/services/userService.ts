@@ -38,6 +38,7 @@ const baseUserIncludeInfo = {
   },
   address: baseAddressIncludeInfo,
   rejectReasons: true,
+  withdraws: true,
 }
 
 interface UserQueryOptions {
