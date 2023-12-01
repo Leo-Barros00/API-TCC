@@ -125,6 +125,8 @@ model Contract {
   contractor   User   @relation("contractorContract", fields: [contractorId], references: [id])
   providerId   String @db.Uuid
   provider     User   @relation("providerContract", fields: [providerId], references: [id])
+  avaliationId String?     @db.Uuid
+  avaliation   Avaliation? @relation("contractAvaliation", fields: [avaliationId], references: [id])
 }
 
 model Avaliation {
@@ -132,5 +134,6 @@ model Avaliation {
   description String  @db.VarChar(255)
   number      String? @db.VarChar(1)
   userId      String  @db.Uuid
-  user        User    @relation("userAvaliation", fields: [userId], references: [id])
+  user User @relation("userAvaliation", fields: [userId], references: [id])
+  contracts Contract[] @relation("contractAvaliation")
 }

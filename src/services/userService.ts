@@ -29,6 +29,7 @@ const baseUserIncludeInfo = {
   contractorContract: {
     include: {
       contractor: true,
+      provider: true,
     },
   },
   preference: {

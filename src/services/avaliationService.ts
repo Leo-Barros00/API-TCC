@@ -15,6 +15,15 @@ class AvaliationService {
       },
     })
   }
+ 
+  static async getAllAvaliation() {
+    return await database.avaliation.findMany({
+      where: {
+      
+      },
+    })
+  }
+
 }
 
 export default AvaliationService
