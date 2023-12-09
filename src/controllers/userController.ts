@@ -9,11 +9,15 @@ import ConflictDataException from '../exceptions/ConflictDataException'
 import AddressService from '../services/adressService'
 import HouseService from '../services/houseService'
 import UserService from '../services/userService'
+import { renameImage } from '../utils/images'
+import RejectReasonService from '../services/rejectReasonService'
+import { addHours } from 'date-fns'
 
 @Controller('/users')
 class UserController {
   @Post('/', AuthContext.Unprotected)
   public async signUp(req: Request, res: Response, next: NextFunction) {
+    
     try {
       const { email, cpf } = req.body
 
@@ -27,12 +31,12 @@ class UserController {
 
       const { neighborhoodId, addressDescription, addressNumber } = req.body
 
+      
       const userAddress = await AddressService.store({
         description: addressDescription,
         neighborhoodId,
         number: addressNumber,
-      })
-
+      })      
       const { name, surname, password, birthDate, gender } = req.body
 
       const salt = bcrypt.genSaltSync(12)
@@ -48,7 +52,8 @@ class UserController {
         gender: gender[0],
         addressId: userAddress.id,
         preferenceId: null,
-        status: 'aprovado',
+        // status: 'pending',
+        status: 'approved',
       })
 
       const userWithoutPassword = {
@@ -56,9 +61,13 @@ class UserController {
         password: null,
       }
 
+      // if (req.files) {
+      //   renameImage('documentImage', newUser.id, req.files)
+      //   renameImage('personImage', newUser.id, req.files)
+      // }
+
       res.status(201).send({ userWithoutPassword })
     } catch (error) {
-      console.log(error)
       next(error)
     }
   }
@@ -75,12 +84,17 @@ class UserController {
     }
   }
 
-  @Post('/aproveUser/:userId', AuthContext.Unprotected)
-  public async approveUser(req: Request, res: Response, next: NextFunction) {
+  @Put('/status/:userId', AuthContext.Unprotected)
+  public async changeUserStatus(req: Request, res: Response, next: NextFunction) {
     try {
       const { userId } = req.params
+      const { status, reason } = req.body
 
-      const updatedUser = await UserService.approve(userId)
+      if (status === 'rejected') {
+        await RejectReasonService.store(userId, reason)
+      }
+
+      const updatedUser = await UserService.changeStatus(userId, status)
 
       res.status(200).send(updatedUser)
     } catch (error) {
@@ -107,7 +121,6 @@ class UserController {
       const { userId } = res.locals
       const {
         animals,
-        maximumMetersBuilt,
         neighborhoods,
         workFourHoursPerDay,
         workSixHoursPerDay,
@@ -129,7 +142,6 @@ class UserController {
           preference: {
             create: {
               animals,
-              maximumMetersBuilt,
               workFourHoursPerDay: workFourHoursPerDay,
               workSixHoursPerDay: workSixHoursPerDay,
               workEightHoursPerDay: workEightHoursPerDay,
@@ -155,7 +167,6 @@ class UserController {
 
       res.status(201).send(userUpdated.preference)
     } catch (error) {
-      console.log(error)
       next(error)
     }
   }
@@ -166,7 +177,7 @@ class UserController {
       const { userId } = res.locals
 
       const user = await UserService.findById(userId)
-      console.log(JSON.stringify(user))
+
       res.status(200).send(user)
     } catch (error) {
       next(error)
@@ -177,7 +188,7 @@ class UserController {
   public async getProviders(req: Request, res: Response, next: NextFunction) {
     try {
       const { userId } = res.locals
-      const { houseId } = req.query
+      const { houseId, startDate, workHours } = req.query
 
       if (!houseId) throw new BadRequestException()
 
@@ -185,15 +196,30 @@ class UserController {
 
       if (!houseSelected) throw new BadRequestException()
 
-      const providers = await database.user.findMany({
+      const startDateParsed = new Date(startDate as string)
+      const endDateParsed = addHours(startDateParsed, Number(workHours))
+
+      const availableProviders = await database.user.findMany({
         where: {
           AND: [
             { id: { not: userId } },
             {
               preference: {
-                maximumMetersBuilt: {
-                  gte: houseSelected.metersBuilt,
-                },
+                ...(workHours?.toString() === '4' && {
+                  workFourHoursPerDay: {
+                    not: null,
+                  },
+                }),
+                ...(workHours === '6' && {
+                  workSixHoursPerDay: {
+                    not: null,
+                  },
+                }),
+                ...(workHours === '8' && {
+                  workEightHoursPerDay: {
+                    not: null,
+                  },
+                }),
                 neighborhoods: {
                   some: {
                     neighborhoodId: {
@@ -208,14 +234,44 @@ class UserController {
                 }),
               },
             },
+            {
+              providerContract: {
+                none: {
+                  OR: [
+                    {
+                      // 1. Termina durante
+                      startDate: { lte: startDateParsed },
+                      endDate: { gte: startDateParsed, lte: endDateParsed },
+                    },
+                    {
+                      // 2. Começa durante
+                      startDate: { gte: startDateParsed, lte: endDateParsed },
+                      endDate: { gte: endDateParsed },
+                    },
+                    {
+                      // 3. Abrange totalmente
+                      startDate: { lte: startDateParsed },
+                      endDate: { gte: endDateParsed },
+                    },
+                    {
+                      // 4. Dentro
+                      startDate: { gte: startDateParsed },
+                      endDate: { lte: endDateParsed },
+                    },
+                  ],
+                },
+              },
+            },
           ],
         },
         include: {
           preference: true,
+          avaliations: true,
         },
       })
+      
 
-      res.status(200).send({ providers })
+      res.status(200).send({ providers: availableProviders })
     } catch (error) {
       next(error)
     }
@@ -227,8 +283,6 @@ class UserController {
       const { userId } = req.params
 
       const user = await UserService.findById(userId)
-
-      console.log({ user })
 
       res.status(200).send(user)
     } catch (error) {

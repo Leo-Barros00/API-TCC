@@ -3,6 +3,161 @@ import log, { LogType } from '../src/utils/log'
 
 const addressStateCityNeighborhood = [
   {
+    stateName: 'Acre',
+    uf: 'AC',
+    cities: [],
+  },
+  {
+    stateName: 'Alagoas',
+    uf: 'AL',
+    cities: [],
+  },
+  {
+    stateName: 'Amapá',
+    uf: 'AP',
+    cities: [],
+  },
+  {
+    stateName: 'Amazonas',
+    uf: 'AM',
+    cities: [],
+  },
+  {
+    stateName: 'Bahia',
+    uf: 'BA',
+    cities: [
+      {
+        cityName: 'Brumado',
+        neighborhoods: [
+          'Centro',
+          'Baraúnas',
+          'Vila Presidente Vargas',
+          'São Jorge',
+          'São Félix',
+          'Parque Alvorada',
+          'Novo Brumado',
+        ],
+      },
+    ],
+  },
+  {
+    stateName: 'Ceará',
+    uf: 'CE',
+    cities: [],
+  },
+  {
+    stateName: 'Distrito Federal',
+    uf: 'DF',
+    cities: [],
+  },
+  {
+    stateName: 'Espírito Santo',
+    uf: 'ES',
+    cities: [],
+  },
+  {
+    stateName: 'Goiás',
+    uf: 'GO',
+    cities: [],
+  },
+  {
+    stateName: 'Maranhão',
+    uf: 'MA',
+    cities: [],
+  },
+  {
+    stateName: 'Mato Grosso',
+    uf: 'MT',
+    cities: [],
+  },
+  {
+    stateName: 'Mato Grosso do Sul',
+    uf: 'MS',
+    cities: [],
+  },
+  {
+    stateName: 'Minas Gerais',
+    uf: 'MG',
+    cities: [
+      {
+        cityName: 'Juvenilia',
+        neighborhoods: ['Centro', 'Vila Pardal'],
+      },
+      {
+        cityName: 'Espinosa',
+        neighborhoods: [],
+      },
+    ],
+  },
+  {
+    stateName: 'Pará',
+    uf: 'PA',
+    cities: [],
+  },
+  {
+    stateName: 'Paraíba',
+    uf: 'PB',
+    cities: [],
+  },
+  {
+    stateName: 'Paraná',
+    uf: 'PR',
+    cities: [],
+  },
+  {
+    stateName: 'Pernambuco',
+    uf: 'PE',
+    cities: [],
+  },
+  {
+    stateName: 'Piauí',
+    uf: 'PI',
+    cities: [],
+  },
+  {
+    stateName: 'Rio de Janeiro',
+    uf: 'RJ',
+    cities: [
+      {
+        cityName: 'Rio de Janeiro',
+        neighborhoods: [
+          'Centro',
+          'Benfica',
+          'Botafogo',
+          'Grajaú',
+          'Barra da Tijuca',
+          'Bangu',
+          'Realengo',
+        ],
+      },
+    ],
+  },
+  {
+    stateName: 'Rio Grande do Norte',
+    uf: 'RN',
+    cities: [],
+  },
+  {
+    stateName: 'Rio Grande do Sul',
+    uf: 'RS',
+    cities: [],
+  },
+  {
+    stateName: 'Rondônia',
+    uf: 'RO',
+    cities: [],
+  },
+  {
+    stateName: 'Roraima',
+    uf: 'RR',
+    cities: [],
+  },
+  {
+    stateName: 'Santa Catarina',
+    uf: 'SC',
+    cities: [],
+  },
+  {
     stateName: 'São Paulo',
     uf: 'SP',
     cities: [
@@ -31,22 +186,14 @@ const addressStateCityNeighborhood = [
     ],
   },
   {
-    stateName: 'Rio de Janeiro',
-    uf: 'RJ',
-    cities: [
-      {
-        cityName: 'Rio de Janeiro',
-        neighborhoods: [
-          'Centro',
-          'Benfica',
-          'Botafogo',
-          'Grajaú',
-          'Barra da Tijuca',
-          'Bangu',
-          'Realengo',
-        ],
-      },
-    ],
+    stateName: 'Sergipe',
+    uf: 'SE',
+    cities: [],
+  },
+  {
+    stateName: 'Tocantins',
+    uf: 'TO',
+    cities: [],
   },
 ]
 

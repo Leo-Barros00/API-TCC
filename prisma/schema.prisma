@@ -29,7 +29,10 @@ model User {
   providerContract   Contract[]           @relation("providerContract")
   contractorContract Contract[]           @relation("contractorContract")
   status             String               @default("pending")
+  avaliations        Avaliation[]         @relation("userAvaliation")
   rejectReasons      RejectReason[]
+  balance            Decimal              @default(0.0) @db.Money
+  withdraws          Withdrawl[]
 }
 
 model RejectReason {
@@ -44,7 +47,6 @@ model ProviderPreferences {
   id                   String                       @id @default(uuid()) @db.Uuid
   animals              Boolean
   neighborhoods        NeighborhoodsOnPreferences[]
-  maximumMetersBuilt   Int
   workFourHoursPerDay  Int?
   workSixHoursPerDay   Int?
   workEightHoursPerDay Int?
@@ -109,12 +111,14 @@ model Address {
 }
 
 model Contract {
-  id          String   @id @default(uuid()) @db.Uuid
-  description String   @db.VarChar(255)
-  value       Decimal  @db.Money
-  date        DateTime @db.Timestamp()
-  accepted    Boolean? @db.Boolean
-  workHours   Int      @db.Integer
+  id             String   @id @default(uuid()) @db.Uuid
+  description    String   @db.VarChar(255)
+  value          Decimal  @db.Money
+  startDate      DateTime @db.Timestamp()
+  endDate        DateTime @db.Timestamp()
+  accepted       Boolean? @db.Boolean
+  workHours      Int      @db.Integer
+  progressStatus String   @default("pending") @db.VarChar(20)
 
   houseId      String @db.Uuid
   house        House  @relation(fields: [houseId], references: [id])
@@ -122,4 +126,23 @@ model Contract {
   contractor   User   @relation("contractorContract", fields: [contractorId], references: [id])
   providerId   String @db.Uuid
   provider     User   @relation("providerContract", fields: [providerId], references: [id])
+  avaliationId String?     @db.Uuid
+  avaliation   Avaliation? @relation("contractAvaliation", fields: [avaliationId], references: [id])
+}
+
+model Avaliation {
+  id          String  @id @default(uuid()) @db.Uuid
+  description String  @db.VarChar(255)
+  number      String? @db.VarChar(1)
+  userId      String  @db.Uuid
+  user User @relation("userAvaliation", fields: [userId], references: [id])
+  contracts Contract[] @relation("contractAvaliation")
+}
+
+model Withdrawl {
+  id     String   @id @default(uuid()) @db.Uuid
+  userId String   @db.Uuid
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  value  Decimal  @db.Money
+  date   DateTime @default(now()) @db.Timestamp()
 }

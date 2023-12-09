@@ -29,6 +29,7 @@ const baseUserIncludeInfo = {
   contractorContract: {
     include: {
       contractor: true,
+      provider: true,
     },
   },
   preference: {
@@ -37,6 +38,8 @@ const baseUserIncludeInfo = {
     },
   },
   address: baseAddressIncludeInfo,
+  rejectReasons: true,
+  withdraws: true,
 }
 
 interface UserQueryOptions {
@@ -97,7 +100,15 @@ class UserService {
       where: {
         id,
       },
-      include: baseUserIncludeInfo,
+      include: {
+        ...baseUserIncludeInfo,
+        rejectReasons: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+          take: 1,
+        },
+      },
     })
   }
 
@@ -117,7 +128,7 @@ class UserService {
     })
   }
 
-  static async storeUser(userData: Omit<User, 'id' | 'createdAt' | 'updatedAt'>) {
+  static async storeUser(userData: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'balance'>) {
     return await database.user.create({
       data: userData,
       include: {
@@ -126,13 +137,13 @@ class UserService {
     })
   }
 
-  static async approve(userId: string) {
+  static async changeStatus(userId: string, newStatus: string) {
     return await database.user.update({
       where: {
         id: userId,
       },
       data: {
-        status: 'aprovado',
+        status: newStatus,
       },
       include: baseUserIncludeInfo,
     })
@@ -142,6 +153,53 @@ class UserService {
     return await database.user.delete({
       where: {
         id: userId,
+      },
+    })
+  }
+
+  static async addBalance(userId: string, balanceToAdd: number) {
+    const user = await database.user.findUnique({
+      where: {
+        id: userId,
+      },
+    })
+
+    if (!user) throw new Error()
+
+    return database.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        balance: Number(user.balance) + balanceToAdd,
+      },
+    })
+  }
+
+  static async withdrawBalance(userId: string, balanceToWithdraw: number) {
+    const user = await database.user.findUnique({
+      where: {
+        id: userId,
+      },
+    })
+
+    if (!user) throw new Error()
+
+    return database.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        balance: Number(user.balance) - balanceToWithdraw,
+      },
+      include: {
+        ...baseUserIncludeInfo,
+        rejectReasons: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+          take: 1,
+        },
       },
     })
   }

@@ -4,6 +4,7 @@ import controllers from './controllers'
 import MetadataKeys from './decorators/metadataKeys'
 import { AuthContext, IRoute } from './decorators/handlerDecorator'
 import AuthMiddleware from './middlewares/authMiddleware'
+import { upload } from './multer'
 
 type ClassConstructor<T = any> = new (...args: any[]) => T
 type ControllerInstance = {
@@ -28,8 +29,16 @@ function getMethodsRouterByControllerRouters(controllerClass: ClassConstructor) 
 
       const routeAuthHandle = authHandlers[authContext]
 
-      if (routeAuthHandle) methodsRouter[method](path, routeAuthHandle, routerMainHandle)
-      else methodsRouter[method](path, routerMainHandle)
+      if (handlerName === 'signUp') {
+        methodsRouter[method](
+          path,
+          upload.fields([{ name: 'documentImage' }, { name: 'personImage' }]),
+          routerMainHandle
+        )
+      } else {
+        if (routeAuthHandle) methodsRouter[method](path, routeAuthHandle, routerMainHandle)
+        else methodsRouter[method](path, routerMainHandle)
+      }
     })
 
   return methodsRouter

@@ -1,10 +1,12 @@
-import UserController from './userController'
 import AddressControler from './adressController'
-import HouseController from './houseController'
-import ContractController from './contractController'
-import StateController from './stateController'
+import AvaliationController from './avaliationController'
 import CityController from './cityController'
+import ContractController from './contractController'
+import HouseController from './houseController'
 import NeighborhoodController from './neighborhoodController'
+import StateController from './stateController'
+import UserController from './userController'
+import WithdrawController from './withdrawController'
 
 export default [
   UserController,
@@ -14,4 +16,6 @@ export default [
   StateController,
   CityController,
   NeighborhoodController,
+  AvaliationController,
+  WithdrawController,
 ]

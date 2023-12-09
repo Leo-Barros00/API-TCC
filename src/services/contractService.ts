@@ -1,17 +1,16 @@
 import { Contract } from '@prisma/client'
+import { addHours } from 'date-fns'
+
 import database from '../database'
 
 class ContractService {
-  static async sendNewContract(contract: Omit<Contract, 'id'>) {
+  static async sendNewContract(contract: Omit<Contract, 'id' | 'endDate' | 'progressStatus'>) {
+    const endDate = addHours(new Date(contract.startDate), contract.workHours)
+
     return await database.contract.create({
       data: {
-        value: contract.value,
-        date: contract.date,
-        description: contract.description,
-        contractorId: contract.contractorId,
-        houseId: contract.houseId,
-        providerId: contract.providerId,
-        workHours: contract.workHours,
+        ...contract,
+        endDate,
       },
     })
   }
@@ -25,6 +24,7 @@ class ContractService {
       },
       include: {
         contractor: true,
+        provider: true,
         house: {
           include: {
             address: {
@@ -46,15 +46,16 @@ class ContractService {
     })
   }
 
-  static async getAllContractsByContractor(contractId: string) {
+  static async getAllContractsByContractor(ownerId: string) {
     return await database.contract.findMany({
       where: {
-        provider: {
-          id: contractId,
+        contractor: {
+          id: ownerId,
         },
       },
       include: {
         contractor: true,
+        provider: true,
         house: {
           include: {
             address: {
@@ -83,6 +84,17 @@ class ContractService {
       },
       data: {
         accepted: status,
+      },
+    })
+  }
+
+  static async changeProgressStatus(id: string, newProgressStatus: string) {
+    return await database.contract.update({
+      where: {
+        id,
+      },
+      data: {
+        progressStatus: newProgressStatus,
       },
     })
   }
