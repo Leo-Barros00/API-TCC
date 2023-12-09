@@ -52,6 +52,7 @@ class UserController {
         gender: gender[0],
         addressId: userAddress.id,
         preferenceId: null,
+        // status: 'pending',
         status: 'approved',
       })
 
@@ -176,7 +177,7 @@ class UserController {
       const { userId } = res.locals
 
       const user = await UserService.findById(userId)
-      console.log(JSON.stringify(user),'PROBLEMAAAA')
+
       res.status(200).send(user)
     } catch (error) {
       next(error)

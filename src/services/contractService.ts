@@ -4,7 +4,7 @@ import { addHours } from 'date-fns'
 import database from '../database'
 
 class ContractService {
-  static async sendNewContract(contract: Omit<Contract, 'id' | 'endDate' | 'finished'>) {
+  static async sendNewContract(contract: Omit<Contract, 'id' | 'endDate' | 'progressStatus'>) {
     const endDate = addHours(new Date(contract.startDate), contract.workHours)
 
     return await database.contract.create({
@@ -77,7 +77,6 @@ class ContractService {
     })
   }
 
-
   static async updateContractStatus(id: string, status: boolean) {
     return await database.contract.update({
       where: {
@@ -89,18 +88,16 @@ class ContractService {
     })
   }
 
-  // WIP contract status
-
-  // static async finishContract(id: string) {
-  //   return await database.contract.update({
-  //     where: {
-  //       id,
-  //     },
-  //     data: {
-  //       finished: true,
-  //     },
-  //   })
-  // }
+  static async changeProgressStatus(id: string, newProgressStatus: string) {
+    return await database.contract.update({
+      where: {
+        id,
+      },
+      data: {
+        progressStatus: newProgressStatus,
+      },
+    })
+  }
 }
 
 export default ContractService

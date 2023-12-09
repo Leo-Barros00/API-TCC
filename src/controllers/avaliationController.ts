@@ -32,7 +32,7 @@ class AvaliationController {
       const avaliations = await AvaliationService.getAvaliation(userId)
 
       const media =
-        avaliations.reduce((acc, avaliation) => {
+        avaliations.reduce((acc: any, avaliation: any) => {
           return acc + Number(avaliation.number)
         }, 0) / avaliations.length
 
