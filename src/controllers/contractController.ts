@@ -14,6 +14,7 @@ class ContractController {
       const { value, startDate, description, houseId, providerId, workHours } = req.body
 
       const contractModel = {
+        avaliationId:'',
         value,
         startDate,
         description,
@@ -26,10 +27,9 @@ class ContractController {
       }
 
       const response = await ContractService.sendNewContract(contractModel)
-      console.log(response)
+      
       res.status(201).send()
-    } catch (error) {
-      console.log(error)
+    } catch (error) {      
       next(error)
     }
   }
@@ -37,8 +37,7 @@ class ContractController {
   @Get('/')
   public async getAllContractsByUser(_: Request, res: Response, next: NextFunction) {
     try {
-      const contracts = await ContractService.getContractsByUser(res.locals.userId)
-
+      const contracts = await ContractService.getContractsByUser(res.locals.userId)      
       res.send(contracts)
     } catch (error) {
       next(error)
@@ -49,9 +48,7 @@ class ContractController {
   public async updateContractStatus(req: Request, res: Response, next: NextFunction) {
     try {
       const { id, status } = req.params
-
-      console.log(status)
-      console.log(Boolean(status))
+     
       const contracts = await ContractService.updateContractStatus(id, status === `true`)
 
       res.status(200).send(contracts)
@@ -65,20 +62,24 @@ class ContractController {
     try {
       const { id } = req.params
 
-      const contract = await ContractService.finishContract(id)
+      // WIP contract status endpoint
 
-      UserService.addBalance(res.locals.userId, Number(contract.value))
+      // const contract = await ContractService.finishContract(id)
 
-      res.status(200).send(contract)
+      // UserService.addBalance(res.locals.userId, Number(contract.value))
+
+      // res.status(200).send(contract)
     } catch (error) {
       next(error)
     }
   }
 
-  @Get('/:idContractor')
+  @Get('/contractor')
   public async getAllContractsByContractor(_: Request, res: Response, next: NextFunction) {
     try {
-      const contratos = await ContractService.getAllContractsByContractor(res.locals.contractId)
+      const contratos = await ContractService.getAllContractsByContractor(res.locals.userId)
+
+      console.log(contratos);
 
       res.status(200).send(contratos)
     } catch (erro) {

@@ -24,6 +24,7 @@ class ContractService {
       },
       include: {
         contractor: true,
+        provider: true,
         house: {
           include: {
             address: {
@@ -45,15 +46,16 @@ class ContractService {
     })
   }
 
-  static async getAllContractsByContractor(contractId: string) {
+  static async getAllContractsByContractor(ownerId: string) {
     return await database.contract.findMany({
       where: {
-        provider: {
-          id: contractId,
+        contractor: {
+          id: ownerId,
         },
       },
       include: {
         contractor: true,
+        provider: true,
         house: {
           include: {
             address: {
@@ -74,6 +76,7 @@ class ContractService {
       },
     })
   }
+
 
   static async updateContractStatus(id: string, status: boolean) {
     return await database.contract.update({
@@ -86,16 +89,18 @@ class ContractService {
     })
   }
 
-  static async finishContract(id: string) {
-    return await database.contract.update({
-      where: {
-        id,
-      },
-      data: {
-        finished: true,
-      },
-    })
-  }
+  // WIP contract status
+
+  // static async finishContract(id: string) {
+  //   return await database.contract.update({
+  //     where: {
+  //       id,
+  //     },
+  //     data: {
+  //       finished: true,
+  //     },
+  //   })
+  // }
 }
 
 export default ContractService

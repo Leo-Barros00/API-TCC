@@ -17,6 +17,7 @@ import { addHours } from 'date-fns'
 class UserController {
   @Post('/', AuthContext.Unprotected)
   public async signUp(req: Request, res: Response, next: NextFunction) {
+    
     try {
       const { email, cpf } = req.body
 
@@ -30,12 +31,12 @@ class UserController {
 
       const { neighborhoodId, addressDescription, addressNumber } = req.body
 
+      
       const userAddress = await AddressService.store({
         description: addressDescription,
         neighborhoodId,
         number: addressNumber,
-      })
-
+      })      
       const { name, surname, password, birthDate, gender } = req.body
 
       const salt = bcrypt.genSaltSync(12)
@@ -59,10 +60,10 @@ class UserController {
         password: null,
       }
 
-      if (req.files) {
-        renameImage('documentImage', newUser.id, req.files)
-        renameImage('personImage', newUser.id, req.files)
-      }
+      // if (req.files) {
+      //   renameImage('documentImage', newUser.id, req.files)
+      //   renameImage('personImage', newUser.id, req.files)
+      // }
 
       res.status(201).send({ userWithoutPassword })
     } catch (error) {
@@ -165,7 +166,6 @@ class UserController {
 
       res.status(201).send(userUpdated.preference)
     } catch (error) {
-      console.log(error)
       next(error)
     }
   }
@@ -176,7 +176,7 @@ class UserController {
       const { userId } = res.locals
 
       const user = await UserService.findById(userId)
-      console.log(JSON.stringify(user))
+      console.log(JSON.stringify(user),'PROBLEMAAAA')
       res.status(200).send(user)
     } catch (error) {
       next(error)
@@ -265,8 +265,10 @@ class UserController {
         },
         include: {
           preference: true,
+          avaliations: true,
         },
       })
+      
 
       res.status(200).send({ providers: availableProviders })
     } catch (error) {
