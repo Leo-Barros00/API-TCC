@@ -56,6 +56,7 @@ class ContractService {
       include: {
         contractor: true,
         provider: true,
+        avaliation: true,
         house: {
           include: {
             address: {
@@ -95,6 +96,17 @@ class ContractService {
       },
       data: {
         progressStatus: newProgressStatus,
+      },
+    })
+  }
+
+  static async updateAvaliation(id: string, newAvaliationId: string) {
+    return await database.contract.update({
+      where: {
+        id,
+      },
+      data: {
+        avaliationId: newAvaliationId,
       },
     })
   }
