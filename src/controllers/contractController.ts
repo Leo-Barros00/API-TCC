@@ -10,7 +10,7 @@ class ContractController {
   @Post('/send')
   public async sendNewContract(req: Request, res: Response, next: NextFunction) {
     try {
-      const { value, startDate, description, houseId, providerId, workHours } = req.body
+      const { value, startDate, description, houseId, providerId, workHours, recurrent } = req.body
 
       const contractModel = {
         avaliationId: null,
@@ -22,6 +22,7 @@ class ContractController {
         providerId,
         accepted: null,
         workHours,
+        recurrent,
       }
 
       await ContractService.sendNewContract(contractModel)
