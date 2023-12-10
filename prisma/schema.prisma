@@ -119,6 +119,7 @@ model Contract {
   accepted       Boolean? @db.Boolean
   workHours      Int      @db.Integer
   progressStatus String   @default("pending") @db.VarChar(20)
+  recurrent      Boolean  @default(false) @db.Boolean
 
   houseId      String @db.Uuid
   house        House  @relation(fields: [houseId], references: [id])
