@@ -52,8 +52,7 @@ class UserController {
         gender: gender[0],
         addressId: userAddress.id,
         preferenceId: null,
-        // status: 'pending',
-        status: 'approved',
+        status: 'pending',
       })
 
       const userWithoutPassword = {

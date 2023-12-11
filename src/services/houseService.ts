@@ -16,7 +16,15 @@ class HouseService {
       include: {
         address: {
           include: {
-            neighborhood: true,
+            neighborhood: {
+              include: {
+                city: {
+                  include: {
+                    state: true,
+                  },
+                },
+              },
+            },
           },
         },
       },
