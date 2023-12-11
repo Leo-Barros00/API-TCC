@@ -50,7 +50,7 @@ class ContractController {
 
       const contract = await ContractService.changeProgressStatus(id, 'completed')
 
-      UserService.addBalance(res.locals.userId, Number(contract.value) * 0.7)
+      UserService.addBalance(res.locals.userId, Number(contract.value) * 0.9)
 
       res.status(200).send()
     } catch (error) {
